@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://rds-mariadb.c346c7pkd3yp.ap-northeast-2.rds.amazonaws.com:3306/ssum
+    username: namiezexx
+    password: jslee0707!
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: create
+      #ddl-auto: update
+      #ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  social:
+    kakao:
+      #client_id: 09fe4c6bc81e0f124df5f6d9f2d8a1e9 # 이재석 계정
+      client_id: 8ab13ea285fff20edcaf3392fc60bd31 # 전원배 계정
+      redirect: /social/login/kakao
+      url:
+        login: https://kauth.kakao.com/oauth/authorize
+        token: https://kauth.kakao.com/oauth/token
+        profile: https://kapi.kakao.com/v2/user/me
+  url:
+    base: http://localhost:8080
+  messages:
+    basename: i18n/exception
+    encoding: UTF-8
+  jwt:
+    secret: namiezexx1!@
+logging:
+  level:
+    # org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+
+
