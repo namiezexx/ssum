@@ -6,7 +6,7 @@ import com.kyobo.dev.api.Ssum.advice.exception.CUserNotFoundException;
 import com.kyobo.dev.api.Ssum.entity.Board;
 import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.board.ParamsPost;
+import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
 import com.kyobo.dev.api.Ssum.repository.BoardJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.PostJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
@@ -42,20 +42,20 @@ public class BoardService {
     }
 
     // 게시물을 등록합니다. 게시물의 회원UID가 조회되지 않으면 CUserNotFoundException 처리합니다.
-    public Post writePost(String uid, String boardName, ParamsPost paramsPost) {
+    public Post writePost(String uid, String boardName, PostDto postDto) {
         Board board = findBoard(boardName);
-        Post post = new Post(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new), board, paramsPost.getAuthor(), paramsPost.getTitle(), paramsPost.getContent());
+        Post post = new Post(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new), board, postDto.getAuthor(), postDto.getTitle(), postDto.getContent());
         return postJpaRepo.save(post);
     }
 
     // 게시물을 수정합니다. 게시물 등록자와 로그인 회원정보가 틀리면 CNotOwnerException 처리합니다.
-    public Post updatePost(long postId, String uid, ParamsPost paramsPost) {
+    public Post updatePost(long postId, String uid, PostDto postDto) {
         Post post = getPost(postId);
         User user = post.getUser();
         if (!uid.equals(user.getUid()))
             throw new CNotOwnerException();
         // 영속성 컨텍스트의 변경감지(dirty checking) 기능에 의해 조회한 Post내용을 변경만 해도 Update쿼리가 실행됩니다.
-        post.setUpdate(paramsPost.getAuthor(), paramsPost.getTitle(), paramsPost.getContent());
+        post.setUpdate(postDto.getAuthor(), postDto.getTitle(), postDto.getContent());
         return post;
     }
 

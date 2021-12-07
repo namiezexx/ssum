@@ -3,11 +3,11 @@ package com.kyobo.dev.api.Ssum.controller.board;
 import com.kyobo.dev.api.Ssum.entity.Board;
 import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.model.response.board.BoardDto;
-import com.kyobo.dev.api.Ssum.model.board.ParamsPost;
-import com.kyobo.dev.api.Ssum.model.response.board.PostDto;
+import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
 import com.kyobo.dev.api.Ssum.model.response.CommonResult;
 import com.kyobo.dev.api.Ssum.model.response.ListResult;
 import com.kyobo.dev.api.Ssum.model.response.SingleResult;
+import com.kyobo.dev.api.Ssum.model.response.board.PostResponseDto;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
 import com.kyobo.dev.api.Ssum.service.board.BoardService;
 import io.swagger.annotations.Api;
@@ -47,11 +47,11 @@ public class BoardController {
 
     @ApiOperation(value = "게시판 글 리스트", notes = "게시판 게시글 리스트를 조회한다.")
     @GetMapping(value = "/{boardName}/posts")
-    public ListResult<PostDto> posts(@PathVariable String boardName) {
+    public ListResult<PostResponseDto> posts(@PathVariable String boardName) {
 
         List<Post> postList = boardService.findPosts(boardName);
-        List<PostDto> postDtoList = postList.stream()
-                .map(post -> modelMapper.map(post, PostDto.class))
+        List<PostResponseDto> postDtoList = postList.stream()
+                .map(post -> modelMapper.map(post, PostResponseDto.class))
                 .collect(Collectors.toList());
 
         return responseService.getListResult(postDtoList);
@@ -62,22 +62,22 @@ public class BoardController {
     })
     @ApiOperation(value = "게시판 글 작성", notes = "게시판에 글을 작성한다.")
     @PostMapping(value = "/{boardName}")
-    public SingleResult<PostDto> post(@PathVariable String boardName, @Valid @ModelAttribute ParamsPost paramsPost) {
+    public SingleResult<PostResponseDto> post(@PathVariable String boardName, @Valid @ModelAttribute PostDto postDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
 
-        Post post = boardService.writePost(uid, boardName, paramsPost);
-        PostDto postDto = modelMapper.map(post, PostDto.class);
+        Post post = boardService.writePost(uid, boardName, postDto);
+        PostResponseDto postResponseDto = modelMapper.map(post, PostResponseDto.class);
 
-        return responseService.getSingleResult(postDto);
+        return responseService.getSingleResult(postResponseDto);
     }
 
     @ApiOperation(value = "게시판 글 상세", notes = "게시판 글 상세정보를 조회한다.")
     @GetMapping(value = "/post/{postId}")
-    public SingleResult<PostDto> post(@PathVariable long postId) {
+    public SingleResult<PostResponseDto> post(@PathVariable long postId) {
 
         Post post = boardService.getPost(postId);
-        PostDto postDto = modelMapper.map(post, PostDto.class);
+        PostResponseDto postDto = modelMapper.map(post, PostResponseDto.class);
 
         return responseService.getSingleResult(postDto);
     }
@@ -87,14 +87,14 @@ public class BoardController {
     })
     @ApiOperation(value = "게시판 글 수정", notes = "게시판의 글을 수정한다.")
     @PutMapping(value = "/post/{postId}")
-    public SingleResult<PostDto> post(@PathVariable long postId, @Valid @ModelAttribute ParamsPost paramsPost) {
+    public SingleResult<PostResponseDto> post(@PathVariable long postId, @Valid @ModelAttribute PostDto postDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
 
-        Post post = boardService.updatePost(postId, uid, paramsPost);
-        PostDto postDto = modelMapper.map(post, PostDto.class);
+        Post post = boardService.updatePost(postId, uid, postDto);
+        PostResponseDto postResponseDto = modelMapper.map(post, PostResponseDto.class);
 
-        return responseService.getSingleResult(postDto);
+        return responseService.getSingleResult(postResponseDto);
     }
 
     @ApiImplicitParams({

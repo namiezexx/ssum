@@ -1,9 +1,7 @@
 package com.kyobo.dev.api.Ssum.config.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.kyobo.dev.api.Ssum.model.response.user.TokenDto;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +25,8 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
     private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
 
+    private long refreshTokenValidMilisecond = tokenValidMilisecond * 24 * 30; // 30일 토큰 유효
+
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
@@ -34,15 +34,29 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
+    public TokenDto createToken(String userPk, List<String> roles) {
+
+        // Create Access Token
+        String accessToken = createToken(tokenValidMilisecond, userPk, roles);
+        String refreshToken = createToken(refreshTokenValidMilisecond, userPk, roles);
+
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setAccessToken(accessToken);
+        tokenDto.setRefreshToken(refreshToken);
+
+        return tokenDto;
+    }
+
     // Jwt 토큰 생성
-    public String createToken(String userPk, List<String> roles) {
+    public String createToken(Long validTime, String userPk, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(userPk);
         claims.put("roles", roles);
         Date now = new Date();
         return Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims) // 데이터
                 .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() + tokenValidMilisecond)) // set Expire Time
+                .setExpiration(new Date(now.getTime() + validTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
                 .compact();
     }

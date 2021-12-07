@@ -43,6 +43,9 @@ public class User implements UserDetails {
     @Column(length = 100)
     private String provider;
 
+    @Column(length = 255)
+    private String refreshToken;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
     private List<Post> posts;
@@ -59,6 +62,8 @@ public class User implements UserDetails {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override

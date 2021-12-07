@@ -1,8 +1,7 @@
-package com.kyobo.dev.api.Ssum.model.board;
+package com.kyobo.dev.api.Ssum.model.request.board;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
@@ -10,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class ParamsPost {
+public class PostDto {
 
     @NotEmpty
     @Size(min=2, max=50)

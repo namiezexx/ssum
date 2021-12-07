@@ -2,6 +2,7 @@ package com.kyobo.dev.api.Ssum.controller.user;
 
 import com.kyobo.dev.api.Ssum.advice.exception.CUserNotFoundException;
 import com.kyobo.dev.api.Ssum.entity.User;
+import com.kyobo.dev.api.Ssum.model.request.user.UpdateDto;
 import com.kyobo.dev.api.Ssum.model.response.CommonResult;
 import com.kyobo.dev.api.Ssum.model.response.ListResult;
 import com.kyobo.dev.api.Ssum.model.response.SingleResult;
@@ -67,13 +68,13 @@ public class UserController {
     @ApiOperation(value = "회원 수정", notes = "회원정보를 수정한다")
     @PutMapping(value = "/user")
     public SingleResult<UserDto> modify(
-            @ApiParam(value = "회원이름", required = true) @RequestParam String name) {
+            @ApiParam(value = "회원이름", required = true) @RequestBody UpdateDto updateDto) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
 
         User user = userJpaRepo.findByUid(id).orElseThrow(CUserNotFoundException::new);
-        user.setName(name);
+        user.setName(updateDto.getName());
 
         user = userJpaRepo.save(user);
         UserDto userDto = modelMapper.map(user, UserDto.class);

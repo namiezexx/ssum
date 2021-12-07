@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PostDto {
+public class PostResponseDto {
 
     private Long postId;
     private String author;
