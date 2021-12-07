@@ -28,7 +28,7 @@ public class InitialCommandLineRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        final int index = 50;
+        final int index = 20;
 
         List<Board> list = new ArrayList<>(4);
 

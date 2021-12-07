@@ -4,12 +4,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 @EnableJpaAuditing  // CommonDateEntity의 Auditing 활성화를 위해 추가
+@EnableAspectJAutoProxy // AOP 사용을 위해 추가
 @SpringBootApplication
 public class SsumApplication {
 

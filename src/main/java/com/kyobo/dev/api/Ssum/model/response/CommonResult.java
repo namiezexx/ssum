@@ -3,9 +3,11 @@ package com.kyobo.dev.api.Ssum.model.response;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CommonResult {
 
     @ApiModelProperty(value = "응답 성공여부 : true/false")
