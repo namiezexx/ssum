@@ -50,19 +50,6 @@ public class BoardController {
         return responseService.getSingleResult(boardDto);
     }
 
-    @ApiOperation(value = "게시판 글 리스트", notes = "게시판 게시글 리스트를 조회한다.")
-    @GetMapping(value = "/{boardName}/posts")
-    public ListResult<PostResponseDto> posts(@PathVariable String boardName,
-                                             @ApiIgnore @PageableDefault(page = 0, size = 10) Pageable pageable) {
-
-        Page<Post> page = boardService.findPosts(boardName, pageable);
-        List<PostResponseDto> postDtoList = page.stream()
-                .map(p -> modelMapper.map(p, PostResponseDto.class))
-                .collect(Collectors.toList());
-
-        return responseService.getListResult(postDtoList, page);
-    }
-
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
@@ -76,16 +63,6 @@ public class BoardController {
         PostResponseDto postResponseDto = modelMapper.map(post, PostResponseDto.class);
 
         return responseService.getSingleResult(postResponseDto);
-    }
-
-    @ApiOperation(value = "게시판 글 상세", notes = "게시판 글 상세정보를 조회한다.")
-    @GetMapping(value = "/post/{postId}")
-    public SingleResult<PostResponseDto> post(@PathVariable long postId) {
-
-        Post post = boardService.getPost(postId);
-        PostResponseDto postDto = modelMapper.map(post, PostResponseDto.class);
-
-        return responseService.getSingleResult(postDto);
     }
 
     @ApiImplicitParams({
@@ -113,44 +90,5 @@ public class BoardController {
         String uid = authentication.getName();
         boardService.deletePost(postId, uid);
         return responseService.getSuccessResult();
-    }
-
-    @ApiOperation(value = "인기순 글 리스트", notes = "전체 게시판 게시글 중 조회수가 가장 높은 10개 항목을 조회한다.")
-    @GetMapping(value = "/post/views")
-    public ListResult<PostResponseDto> postsByViews(
-            @ApiIgnore @PageableDefault(page = 0, size = 10, sort = "views", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        Page<Post> page = boardService.findPosts(pageable);
-        List<PostResponseDto> postDtoList = page.stream()
-                .map(p -> modelMapper.map(p, PostResponseDto.class))
-                .collect(Collectors.toList());
-
-        return responseService.getListResult(postDtoList, page);
-    }
-
-    @ApiOperation(value = "최신 글 리스트", notes = "전체 게시판 게시글 중 최신순으로 10개 항목을 조회한다.")
-    @GetMapping(value = "/post/new")
-    public ListResult<PostResponseDto> postsByNew(
-            @ApiIgnore @PageableDefault(page = 0, size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        Page<Post> page = boardService.findPosts(pageable);
-        List<PostResponseDto> postDtoList = page.stream()
-                .map(p -> modelMapper.map(p, PostResponseDto.class))
-                .collect(Collectors.toList());
-
-        return responseService.getListResult(postDtoList, page);
-    }
-
-    @ApiOperation(value = "추천 글 리스트", notes = "전체 게시판 게시글 중 좋아요 순으로 10개 항목을 조회한다.")
-    @GetMapping(value = "/post/likes")
-    public ListResult<PostResponseDto> postsByLikes(
-            @ApiIgnore @PageableDefault(page = 0, size = 10, sort = "likes", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        Page<Post> page = boardService.findPosts(pageable);
-        List<PostResponseDto> postDtoList = page.stream()
-                .map(p -> modelMapper.map(p, PostResponseDto.class))
-                .collect(Collectors.toList());
-
-        return responseService.getListResult(postDtoList, page);
     }
 }
