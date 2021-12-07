@@ -28,7 +28,9 @@ public class InitialCommandLineRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        final int index = 20;
+        final int index = 100;
+
+        String thumbnailUrl = "https://namiezexx-test-bucket.s3.ap-northeast-2.amazonaws.com/ssum/mylib/book/mini-book";
 
         List<Board> list = new ArrayList<>(4);
 
@@ -44,7 +46,7 @@ public class InitialCommandLineRunner implements CommandLineRunner {
         list.add(new Board("free"));
         boardJpaRepo.save(list.get(3));
 
-        for(int i=0; i<index; i++) {
+        for(int i=1; i<=index; i++) {
 
             String uid = "test" + i + "@naver.com";
             String name = "홍길동" + i;
@@ -59,7 +61,7 @@ public class InitialCommandLineRunner implements CommandLineRunner {
                     .build();
             userJpaRepo.save(user);
 
-            Post post = new Post(user, list.get(i % list.size()), name, title, contents);
+            Post post = new Post(user, list.get(i % list.size()), name, title, contents, thumbnailUrl + ((i % 10)+1) + ".png");
             postJpaRepo.save(post);
         }
     }

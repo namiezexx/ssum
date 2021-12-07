@@ -27,4 +27,8 @@ public class PostDto {
     @ApiModelProperty(value = "내용", required = true)
     private String content;
 
+    @Size(min = 10, max = 1024)
+    @ApiModelProperty(value = "썸네일", required = false)
+    private String thumbnailUrl;
+
 }

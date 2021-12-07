@@ -10,5 +10,11 @@ import java.util.List;
 @Setter
 @ToString
 public class ListResult<T> extends CommonResult {
+
+    private boolean first;
+    private boolean last;
+    private long totalItems;
+    private int totalPages;
+
     private List<T> list;
 }

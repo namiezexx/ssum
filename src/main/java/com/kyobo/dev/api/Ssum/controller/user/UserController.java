@@ -12,9 +12,13 @@ import com.kyobo.dev.api.Ssum.service.ResponseService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,14 +39,14 @@ public class UserController {
     })
     @ApiOperation(value = "회원 리스트 조회", notes = "모든 회원을 조회한다")
     @GetMapping(value = "/users")
-    public ListResult<UserDto> findAllUser() {
+    public ListResult<UserDto> findAllUser(@ApiIgnore @PageableDefault(page = 0, size = 10) Pageable pageable) {
 
-        List<User> userList = userJpaRepo.findAll();
-        List<UserDto> userDtoList = userList.stream()
+        Page<User> page = userJpaRepo.findAll(pageable);
+        List<UserDto> userDtoList = page.stream()
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
 
-        return responseService.getListResult(userDtoList);
+        return responseService.getListResult(userDtoList, page);
     }
 
     @ApiImplicitParams({

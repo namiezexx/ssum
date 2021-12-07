@@ -1,8 +1,11 @@
 package com.kyobo.dev.api.Ssum.service;
 
+import com.kyobo.dev.api.Ssum.advice.exception.CResourceNotExistException;
 import com.kyobo.dev.api.Ssum.model.response.CommonResult;
 import com.kyobo.dev.api.Ssum.model.response.ListResult;
 import com.kyobo.dev.api.Ssum.model.response.SingleResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,8 +44,20 @@ public class ResponseService {
     }
 
     // 다중건 결과를 처리하는 메소드
-    public <T> ListResult<T> getListResult(List<T> list) {
+    public <T> ListResult<T> getListResult(List<T> list, Page page) {
+
+        /**
+         * List에 응답객체가 없다면 CResourceNotExistException을 던진다.
+         */
+        if(list.size() == 0) {
+            throw new CResourceNotExistException();
+        }
+
         ListResult<T> result = new ListResult<>();
+        result.setFirst(page.isFirst());
+        result.setLast(page.isLast());
+        result.setTotalItems(page.getTotalElements());
+        result.setTotalPages(page.getTotalPages());
         result.setList(list);
         setSuccessResult(result);
         return result;

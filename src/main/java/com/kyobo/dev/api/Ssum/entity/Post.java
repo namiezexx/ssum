@@ -25,6 +25,9 @@ public class Post extends CommonDateEntity {
     @Lob
     private String content;
 
+    @Column(nullable = true, length = 1024)
+    private String thumbnailUrl;
+
     @Column(columnDefinition = "integer default 0")
     private int views;
 
@@ -42,12 +45,13 @@ public class Post extends CommonDateEntity {
     private User user;  // 게시글 - 회원의 관계 - N:1
 
     // 생성자
-    public Post(User user, Board board, String author, String title, String content) {
+    public Post(User user, Board board, String author, String title, String content, String thumbnailUrl) {
         this.user = user;
         this.board = board;
         this.author = author;
         this.title = title;
         this.content = content;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     // 수정시 데이터 처리
@@ -55,6 +59,11 @@ public class Post extends CommonDateEntity {
         this.author = author;
         this.title = title;
         this.content = content;
+        return this;
+    }
+
+    public Post addViews() {
+        this.views++;
         return this;
     }
 }

@@ -11,6 +11,9 @@ import com.kyobo.dev.api.Ssum.repository.BoardJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.PostJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,19 +35,21 @@ public class BoardService {
     }
 
     // 게시판 이름으로 게시물 리스트 조회.
-    public List<Post> findPosts(String boardName) {
-        return postJpaRepo.findByBoard(findBoard(boardName));
+    public Page<Post> findPosts(String boardName, Pageable pageable) {
+        Board board = findBoard(boardName);
+        return Optional.ofNullable(postJpaRepo.findByBoard(board, pageable)).orElseThrow(CResourceNotExistException::new);
     }
 
     // 게시물ID로 게시물 단건 조회. 없을경우 CResourceNotExistException 처리
     public Post getPost(long postId) {
-        return postJpaRepo.findById(postId).orElseThrow(CResourceNotExistException::new);
+        Post post = postJpaRepo.findById(postId).orElseThrow(CResourceNotExistException::new);
+        return post.addViews();
     }
 
     // 게시물을 등록합니다. 게시물의 회원UID가 조회되지 않으면 CUserNotFoundException 처리합니다.
     public Post writePost(String uid, String boardName, PostDto postDto) {
         Board board = findBoard(boardName);
-        Post post = new Post(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new), board, postDto.getAuthor(), postDto.getTitle(), postDto.getContent());
+        Post post = new Post(userJpaRepo.findByUid(uid).orElseThrow(CUserNotFoundException::new), board, postDto.getAuthor(), postDto.getTitle(), postDto.getContent(), postDto.getThumbnailUrl());
         return postJpaRepo.save(post);
     }
 
@@ -52,19 +57,22 @@ public class BoardService {
     public Post updatePost(long postId, String uid, PostDto postDto) {
         Post post = getPost(postId);
         User user = post.getUser();
+
         if (!uid.equals(user.getUid()))
             throw new CNotOwnerException();
+
         // 영속성 컨텍스트의 변경감지(dirty checking) 기능에 의해 조회한 Post내용을 변경만 해도 Update쿼리가 실행됩니다.
-        post.setUpdate(postDto.getAuthor(), postDto.getTitle(), postDto.getContent());
-        return post;
+        return post.setUpdate(postDto.getAuthor(), postDto.getTitle(), postDto.getContent());
     }
 
     // 게시물을 삭제합니다. 게시물 등록자와 로그인 회원정보가 틀리면 CNotOwnerException 처리합니다.
     public boolean deletePost(long postId, String uid) {
         Post post = getPost(postId);
         User user = post.getUser();
+
         if (!uid.equals(user.getUid()))
             throw new CNotOwnerException();
+
         postJpaRepo.delete(post);
         return true;
     }

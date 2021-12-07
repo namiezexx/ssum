@@ -16,9 +16,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -47,14 +51,15 @@ public class BoardController {
 
     @ApiOperation(value = "게시판 글 리스트", notes = "게시판 게시글 리스트를 조회한다.")
     @GetMapping(value = "/{boardName}/posts")
-    public ListResult<PostResponseDto> posts(@PathVariable String boardName) {
+    public ListResult<PostResponseDto> posts(@PathVariable String boardName,
+                                             @ApiIgnore @PageableDefault(page = 0, size = 10) Pageable pageable) {
 
-        List<Post> postList = boardService.findPosts(boardName);
-        List<PostResponseDto> postDtoList = postList.stream()
-                .map(post -> modelMapper.map(post, PostResponseDto.class))
+        Page<Post> page = boardService.findPosts(boardName, pageable);
+        List<PostResponseDto> postDtoList = page.stream()
+                .map(p -> modelMapper.map(p, PostResponseDto.class))
                 .collect(Collectors.toList());
 
-        return responseService.getListResult(postDtoList);
+        return responseService.getListResult(postDtoList, page);
     }
 
     @ApiImplicitParams({

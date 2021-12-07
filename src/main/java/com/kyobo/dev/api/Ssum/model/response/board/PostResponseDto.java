@@ -14,6 +14,7 @@ public class PostResponseDto {
     private String author;
     private String title;
     private String content;
+    private String thumbnailUrl;
     private int views;
     private int likes;
     private BoardDto board;
