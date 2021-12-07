@@ -80,6 +80,9 @@ public class UserController {
         User user = userJpaRepo.findByUid(id).orElseThrow(CUserNotFoundException::new);
         user.setName(updateDto.getName());
 
+        /**
+         * Controller는 Trasactional이 걸려있지 않으므로 직접 save 메소드를 사용해야한다.
+         */
         user = userJpaRepo.save(user);
         UserDto userDto = modelMapper.map(user, UserDto.class);
 

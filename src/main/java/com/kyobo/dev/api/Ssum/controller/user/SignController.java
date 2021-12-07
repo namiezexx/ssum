@@ -85,6 +85,8 @@ public class SignController {
                 .uid(joinDto.getId())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
                 .name(joinDto.getName())
+                .phone(joinDto.getPhone())
+                .profileImageUrl(joinDto.getProfileImageUrl())
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());
         return responseService.getSuccessResult();
@@ -104,6 +106,8 @@ public class SignController {
                 .uid(String.valueOf(profile.getId()))
                 .provider(provider)
                 .name(socialJoinDto.getName())
+                .phone(socialJoinDto.getPhone())
+                .profileImageUrl(socialJoinDto.getProfileImageUrl())
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build();
 

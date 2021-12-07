@@ -40,6 +40,10 @@ public class BoardService {
         return Optional.ofNullable(postJpaRepo.findByBoard(board, pageable)).orElseThrow(CResourceNotExistException::new);
     }
 
+    public Page<Post> findPosts(Pageable pageable) {
+        return Optional.ofNullable(postJpaRepo.findAll(pageable)).orElseThrow(CResourceNotExistException::new);
+    }
+
     // 게시물ID로 게시물 단건 조회. 없을경우 CResourceNotExistException 처리
     public Post getPost(long postId) {
         Post post = postJpaRepo.findById(postId).orElseThrow(CResourceNotExistException::new);

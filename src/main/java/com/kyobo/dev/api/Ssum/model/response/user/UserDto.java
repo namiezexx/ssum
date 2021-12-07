@@ -12,6 +12,8 @@ public class UserDto {
     private long msrl;
     private String uid;
     private String name;
+    private String phone;
+    private String profileImageUrl;
     private String provider;
 
 }

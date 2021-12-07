@@ -30,6 +30,7 @@ public class InitialCommandLineRunner implements CommandLineRunner {
 
         final int index = 100;
 
+        String profileImageUrl = "https://namiezexx-test-bucket.s3.ap-northeast-2.amazonaws.com/ssum/mylib/author/author";
         String thumbnailUrl = "https://namiezexx-test-bucket.s3.ap-northeast-2.amazonaws.com/ssum/mylib/book/mini-book";
 
         List<Board> list = new ArrayList<>(4);
@@ -57,6 +58,8 @@ public class InitialCommandLineRunner implements CommandLineRunner {
                     .uid(uid)
                     .password(passwordEncoder.encode("12345"))
                     .name(name)
+                    .phone("01012341234")
+                    .profileImageUrl(profileImageUrl + ((i % 4) + 1) + ".png")
                     .roles(Collections.singletonList("ROLE_USER"))
                     .build();
             userJpaRepo.save(user);

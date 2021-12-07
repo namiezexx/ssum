@@ -40,6 +40,12 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(nullable = true, length = 20)
+    private String phone;
+
+    @Column(nullable = true, length = 1024)
+    private String profileImageUrl;
+
     @Column(length = 100)
     private String provider;
 
