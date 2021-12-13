@@ -44,6 +44,10 @@ public class BoardController {
     @GetMapping(value = "/{boardName}")
     public SingleResult<BoardDto> boardInfo(@PathVariable String boardName) {
 
+        /**
+         * Controller는 UI와 Service사이의 데이터 변환을 담당하고 실제 비즈니스 로직은 Service에서 처리한다.
+         */
+
         Board board = boardService.findBoard(boardName);
         BoardDto boardDto = modelMapper.map(board, BoardDto.class);
 
@@ -88,7 +92,9 @@ public class BoardController {
     public CommonResult deletePost(@PathVariable long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
+
         boardService.deletePost(postId, uid);
+
         return responseService.getSuccessResult();
     }
 }

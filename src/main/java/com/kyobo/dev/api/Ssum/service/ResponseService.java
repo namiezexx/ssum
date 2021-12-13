@@ -73,7 +73,6 @@ public class ResponseService {
     // 실패 결과만 처리하는 메소드
     public CommonResult getFailResult(int code, String msg) {
         CommonResult result = new CommonResult();
-        result.setSuccess(false);
         result.setCode(code);
         result.setMsg(msg);
         return result;
@@ -81,7 +80,6 @@ public class ResponseService {
 
     // 결과 모델에 api 요청 성공 데이터를 세팅해주는 메소드
     private void setSuccessResult(CommonResult result) {
-        result.setSuccess(true);
         result.setCode(CommonResponse.SUCCESS.getCode());
         result.setMsg(CommonResponse.SUCCESS.getMsg());
     }

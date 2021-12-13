@@ -1,5 +1,6 @@
 package com.kyobo.dev.api.Ssum.config.security;
 
+import com.kyobo.dev.api.Ssum.advice.exception.CExpiredAccessTokenException;
 import com.kyobo.dev.api.Ssum.model.response.user.TokenDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     @Value("spring.jwt.secret")
     private String secretKey;
 
-    private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
+    private long tokenValidMilisecond = 1000L * 60 * 30; // 30분만 토큰 유효
 
     private long refreshTokenValidMilisecond = tokenValidMilisecond * 24 * 30; // 30일 토큰 유효
 
@@ -82,8 +83,12 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            e.printStackTrace();
+            throw new CExpiredAccessTokenException();
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
+            throw new RuntimeException();
         }
     }
 }

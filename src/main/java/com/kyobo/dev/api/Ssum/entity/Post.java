@@ -1,11 +1,13 @@
 package com.kyobo.dev.api.Ssum.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kyobo.dev.api.Ssum.entity.common.CommonDateEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,15 +36,18 @@ public class Post extends CommonDateEntity {
     @Column(columnDefinition = "integer default 0")
     private int likes;
 
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boardId")
     private Board board; // 게시글 - 게시판의 관계 - N:1
 
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "msrl")
     private User user;  // 게시글 - 회원의 관계 - N:1
+
+    @OneToMany(mappedBy = "readingHistoryId")
+    private List<ReadingHistory> readingHistories;
 
     // 생성자
     public Post(User user, Board board, String author, String title, String content, String thumbnailUrl) {

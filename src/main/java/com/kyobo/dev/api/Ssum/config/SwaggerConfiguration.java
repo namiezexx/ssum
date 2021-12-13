@@ -26,7 +26,7 @@ public class SwaggerConfiguration {
 
     private ApiInfo swaggerInfo() {
         return new ApiInfoBuilder().title("Kyobo Ssum API Documentation")
-                .description("Ssum 서버 API에 대한 연동 문서입니다.")
-                .license("Ssum").licenseUrl("http://ssum.kyobo.com").version("V1").build();
+                .description("Ssum Back-end API에 대한 연동 문서입니다.")
+                .license("SSUM-API").licenseUrl("http://13.209.61.51:8080/swagger-ui.html").version("V1").build();
     }
 }

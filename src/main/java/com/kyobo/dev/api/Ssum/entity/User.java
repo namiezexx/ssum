@@ -3,6 +3,7 @@ package com.kyobo.dev.api.Ssum.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kyobo.dev.api.Ssum.entity.common.CommonDateEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor // 인자를 모두 갖춘 생성자를 자동으로 생성합니다.
 @Table(name = "user") // 'user' 테이블과 매핑됨을 명시
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Post Entity에서 User와의 관계를 Json으로 변환시 오류 방지를 위한 코드
-public class User implements UserDetails {
+public class User extends CommonDateEntity implements UserDetails {
 
     @Id // pk
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,9 +53,12 @@ public class User implements UserDetails {
     @Column(length = 255)
     private String refreshToken;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
+    //@JsonManagedReference
+    @OneToMany(mappedBy = "postId")
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "readingHistoryId")
+    private List<ReadingHistory> readingHistories;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

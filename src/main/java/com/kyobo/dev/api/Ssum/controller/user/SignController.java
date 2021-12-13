@@ -16,6 +16,7 @@ import com.kyobo.dev.api.Ssum.model.social.SocialJoinDto;
 import com.kyobo.dev.api.Ssum.model.social.SocialLoginDto;
 import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
+import com.kyobo.dev.api.Ssum.service.user.UserService;
 import com.kyobo.dev.api.Ssum.service.social.KakaoService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -34,21 +35,25 @@ import java.util.Optional;
 public class SignController {
 
     private final UserJpaRepo userJpaRepo;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ResponseService responseService;
-    private final PasswordEncoder passwordEncoder;
+
+    private final UserService userService;
     private final KakaoService kakaoService;
+    private final ResponseService responseService;
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @ApiOperation(value = "로그인", notes = "이메일 회원 로그인을 한다.")
     @PostMapping(value = "/signin")
     public SingleResult<TokenDto> signin(@ApiParam(value = "로그인 데이타", required = true) @RequestBody LoginDto loginDto) {
 
-        User user = userJpaRepo.findByUid(loginDto.getId()).orElseThrow(CEmailSigninFailedException::new);
+        User user = userService.findUser(loginDto.getId());
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword()))
             throw new CEmailSigninFailedException();
 
         TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles());
 
+        // 사용자가 로그인을 하면 refreshToken을 DB에 보관하고 refreshToken 갱신 요청 시 비교하여 갱신처리한다.
         user.setRefreshToken(tokenDto.getRefreshToken());
         userJpaRepo.save(user);
 
@@ -62,7 +67,7 @@ public class SignController {
             @ApiParam(value = "소셜 access_token", required = true) @RequestBody SocialLoginDto socialLoginDto) {
 
         KakaoProfile profile = kakaoService.getKakaoProfile(socialLoginDto.getAccessToken());
-        User user = userJpaRepo.findByUidAndProvider(String.valueOf(profile.getId()), provider).orElseThrow(CUserNotFoundException::new);
+        User user = Optional.ofNullable(userJpaRepo.findByUidAndProvider(String.valueOf(profile.getId()), provider)).orElseThrow(CUserNotFoundException::new);
 
         TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles());
 
@@ -76,10 +81,7 @@ public class SignController {
     @PostMapping(value = "/signup")
     public CommonResult signup(@ApiParam(value = "가입 데이타", required = true) @RequestBody JoinDto joinDto) {
 
-        Optional<User> optionalUser = userJpaRepo.findByUid(joinDto.getId());
-        optionalUser.ifPresent(findUser -> {
-            throw new CUserExistException();
-        });
+        userService.checkUserPresent(joinDto.getId());
 
         userJpaRepo.save(User.builder()
                 .uid(joinDto.getId())
@@ -98,20 +100,17 @@ public class SignController {
                                        @ApiParam(value = "가입 데이타", required = true) @RequestBody SocialJoinDto socialJoinDto) {
 
         KakaoProfile profile = kakaoService.getKakaoProfile(socialJoinDto.getAccessToken());
-        Optional<User> user = userJpaRepo.findByUidAndProvider(String.valueOf(profile.getId()), provider);
-        if (user.isPresent())
-            throw new CUserExistException();
+        userService.checkSocialUserPresent(String.valueOf(profile.getId()), provider);
 
-        User inUser = User.builder()
+        userJpaRepo.save(User.builder()
                 .uid(String.valueOf(profile.getId()))
                 .provider(provider)
                 .name(socialJoinDto.getName())
                 .phone(socialJoinDto.getPhone())
                 .profileImageUrl(socialJoinDto.getProfileImageUrl())
                 .roles(Collections.singletonList("ROLE_USER"))
-                .build();
+                .build());
 
-        userJpaRepo.save(inUser);
         return responseService.getSuccessResult();
     }
 
@@ -119,26 +118,15 @@ public class SignController {
     @PostMapping(value = "/signin/token")
     public SingleResult<TokenDto> tokenUpdate(@ApiParam(value = "토큰 갱신 데이타", required = true) @RequestBody RefreshTokenDto refreshTokenDto) {
 
-        User user = null;
+        Authentication authentication = jwtTokenProvider.getAuthentication(refreshTokenDto.getRefreshToken());
+        String uid = authentication.getName();
 
-        try {
-            // refreshToken으로 사용자를 조회한다. 이 시점에 발생하는 예외는 별도로 잡아야하며 CUserNotFoundException을 던진다.
-            Authentication authentication = jwtTokenProvider.getAuthentication(refreshTokenDto.getRefreshToken());
-            String id = authentication.getName();
-
-            user = userJpaRepo.findByUid(id).orElseThrow(CUserNotFoundException::new);
-
-            if(!user.getRefreshToken().equals(refreshTokenDto.getRefreshToken())) {
-                throw new Exception();
-            }
-
-        } catch (Exception e) {
-            throw new CUserNotFoundException();
-        }
+        User user = userService.findUser(uid);
 
         TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles());
         tokenDto.setRefreshToken(user.getRefreshToken());
 
         return responseService.getSingleResult(tokenDto);
+
     }
 }

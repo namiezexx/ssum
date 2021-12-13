@@ -6,6 +6,7 @@ import com.kyobo.dev.api.Ssum.entity.User;
 import com.kyobo.dev.api.Ssum.repository.BoardJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.PostJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
+import com.kyobo.dev.api.Ssum.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +24,8 @@ public class InitialCommandLineRunner implements CommandLineRunner {
     private final UserJpaRepo userJpaRepo;
     private final BoardJpaRepo boardJpaRepo;
     private final PostJpaRepo postJpaRepo;
+
+    private final BoardService boardService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -66,6 +70,12 @@ public class InitialCommandLineRunner implements CommandLineRunner {
 
             Post post = new Post(user, list.get(i % list.size()), name, title, contents, thumbnailUrl + ((i % 10)+1) + ".png");
             postJpaRepo.save(post);
+        }
+
+        Random random = new Random();
+        for(int i=1; i<=index; i++) {
+            String uid = "test" + i + "@naver.com";
+            boardService.updateReadingHistory(uid, random.nextInt(100)+1);
         }
     }
 }

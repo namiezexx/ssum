@@ -1,14 +1,13 @@
 package com.kyobo.dev.api.Ssum.repository;
 
 import com.kyobo.dev.api.Ssum.entity.User;
+import com.kyobo.dev.api.Ssum.service.user.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -22,6 +21,9 @@ public class UserJpaRepoTest {
 
     @Autowired
     private UserJpaRepo userJpaRepo;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -43,7 +45,7 @@ public class UserJpaRepoTest {
                 .build());
 
         // when
-        Optional<User> user = userJpaRepo.findByUid(uid);
+        Optional<User> user = Optional.ofNullable(userService.findUser(uid));
 
         // then
         assertNotNull(user);// user객체가 null이 아닌지 체크
