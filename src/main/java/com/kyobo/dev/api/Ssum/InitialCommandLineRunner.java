@@ -72,10 +72,10 @@ public class InitialCommandLineRunner implements CommandLineRunner {
             postJpaRepo.save(post);
         }
 
-        Random random = new Random();
+        /*Random random = new Random();
         for(int i=1; i<=index; i++) {
             String uid = "test" + i + "@naver.com";
             boardService.updateReadingHistory(uid, random.nextInt(100)+1);
-        }
+        }*/
     }
 }

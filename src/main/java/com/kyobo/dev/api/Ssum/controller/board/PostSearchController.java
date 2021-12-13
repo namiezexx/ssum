@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,15 +47,12 @@ public class PostSearchController {
     })
     @ApiOperation(value = "게시글 상세 조회", notes = "게시글 상세정보를 조회한다.")
     @GetMapping(value = "/post/{postId}")
-    public SingleResult<PostResponseDto> post(@PathVariable long postId) {
+    public SingleResult<PostResponseDto> post(
+            @ApiIgnore @AuthenticationPrincipal User user,
+            @PathVariable long postId) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String uid = authentication.getName();
-
-        Post post = boardService.findPost(postId);
+        Post post = boardService.updateReadingHistory(user, postId);
         PostResponseDto postDto = modelMapper.map(post, PostResponseDto.class);
-
-        boardService.updateReadingHistory(uid, postId);
 
         return responseService.getSingleResult(postDto);
     }

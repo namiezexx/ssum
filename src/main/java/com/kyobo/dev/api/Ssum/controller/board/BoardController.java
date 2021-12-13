@@ -2,6 +2,7 @@ package com.kyobo.dev.api.Ssum.controller.board;
 
 import com.kyobo.dev.api.Ssum.entity.Board;
 import com.kyobo.dev.api.Ssum.entity.Post;
+import com.kyobo.dev.api.Ssum.entity.User;
 import com.kyobo.dev.api.Ssum.model.response.board.BoardDto;
 import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
 import com.kyobo.dev.api.Ssum.model.response.CommonResult;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -59,11 +61,12 @@ public class BoardController {
     })
     @ApiOperation(value = "게시판 글 작성", notes = "게시판에 글을 작성한다.")
     @PostMapping(value = "/{boardName}")
-    public SingleResult<PostResponseDto> post(@PathVariable String boardName, @Valid @ModelAttribute PostDto postDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String uid = authentication.getName();
+    public SingleResult<PostResponseDto> post(
+            @ApiIgnore @AuthenticationPrincipal User user,
+            @PathVariable String boardName,
+            @Valid @RequestBody PostDto postDto) {
 
-        Post post = boardService.writePost(uid, boardName, postDto);
+        Post post = boardService.writePost(user, boardName, postDto);
         PostResponseDto postResponseDto = modelMapper.map(post, PostResponseDto.class);
 
         return responseService.getSingleResult(postResponseDto);
@@ -74,11 +77,12 @@ public class BoardController {
     })
     @ApiOperation(value = "게시판 글 수정", notes = "게시판의 글을 수정한다.")
     @PutMapping(value = "/post/{postId}")
-    public SingleResult<PostResponseDto> post(@PathVariable long postId, @Valid @ModelAttribute PostDto postDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String uid = authentication.getName();
+    public SingleResult<PostResponseDto> post(
+            @ApiIgnore @AuthenticationPrincipal User user,
+            @PathVariable long postId,
+            @Valid @RequestBody PostDto postDto) {
 
-        Post post = boardService.updatePost(postId, uid, postDto);
+        Post post = boardService.updatePost(user, postId, postDto);
         PostResponseDto postResponseDto = modelMapper.map(post, PostResponseDto.class);
 
         return responseService.getSingleResult(postResponseDto);
@@ -89,11 +93,11 @@ public class BoardController {
     })
     @ApiOperation(value = "게시판 글 삭제", notes = "게시판의 글을 삭제한다.")
     @DeleteMapping(value = "/post/{postId}")
-    public CommonResult deletePost(@PathVariable long postId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String uid = authentication.getName();
+    public CommonResult deletePost(
+            @ApiIgnore @AuthenticationPrincipal User user,
+            @PathVariable long postId) {
 
-        boardService.deletePost(postId, uid);
+        boardService.deletePost(user, postId);
 
         return responseService.getSuccessResult();
     }

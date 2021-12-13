@@ -49,18 +49,18 @@ public class BoardService {
     }
 
     // 게시물을 등록합니다. 게시물의 회원UID가 조회되지 않으면 CUserNotFoundException 처리합니다.
-    public Post writePost(String uid, String boardName, PostDto postDto) {
-        User user = userService.findUser(uid);
-        Board board = findBoard(boardName);
+    public Post writePost(User user, String boardName, PostDto postDto) {
 
+        Board board = findBoard(boardName);
         return postJpaRepo.save(new Post(user, board, postDto.getAuthor(), postDto.getTitle(), postDto.getContent(), postDto.getThumbnailUrl()));
     }
 
     // 게시물을 수정합니다. 게시물 등록자와 로그인 회원정보가 틀리면 CNotOwnerException 처리합니다.
-    public Post updatePost(long postId, String uid, PostDto postDto) {
+    public Post updatePost(User user, long postId, PostDto postDto) {
+
         Post post = findPost(postId);
 
-        if (!uid.equals(post.getUser().getUid()))
+        if (!user.getUid().equals(post.getUser().getUid()))
             throw new CNotOwnerException();
 
         // 영속성 컨텍스트의 변경감지(dirty checking) 기능에 의해 조회한 Post내용을 변경만 해도 Update쿼리가 실행됩니다.
@@ -68,10 +68,11 @@ public class BoardService {
     }
 
     // 게시물을 삭제합니다. 게시물 등록자와 로그인 회원정보가 틀리면 CNotOwnerException 처리합니다.
-    public boolean deletePost(long postId, String uid) {
+    public boolean deletePost(User user, long postId) {
+
         Post post = findPost(postId);
 
-        if (!uid.equals(post.getUser().getUid()))
+        if (!user.getUid().equals(post.getUser().getUid()))
             throw new CNotOwnerException();
 
         readingHistoryJpaRepo.deleteReadingHistoryByPost(post);
@@ -80,9 +81,8 @@ public class BoardService {
         return true;
     }
 
-    public boolean updateReadingHistory(String uid, long postId) {
+    public Post updateReadingHistory(User user, long postId) {
 
-        User user = userService.findUser(uid);
         Post post = findPost(postId);
 
         ReadingHistory readingHistory = readingHistoryJpaRepo.selectReadingHistoryByUserAndPost(user, post)
@@ -93,6 +93,6 @@ public class BoardService {
         readingHistory.addReadingCount();
         readingHistoryJpaRepo.save(readingHistory);
 
-        return true;
+        return post;
     }
 }

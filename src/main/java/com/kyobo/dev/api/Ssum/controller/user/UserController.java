@@ -11,11 +11,14 @@ import com.kyobo.dev.api.Ssum.service.user.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -55,13 +58,9 @@ public class UserController {
     })
     @ApiOperation(value = "회원 단건 조회", notes = "회원번호(msrl)로 회원을 조회한다")
     @GetMapping(value = "/user")
-    public SingleResult<UserDto> findUser() {
+    public SingleResult<UserDto> findUser(@ApiIgnore @AuthenticationPrincipal User user) {
 
-        // SecurityContext에서 인증받은 회원의 정보를 얻어온다.
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String uid = authentication.getName();
-
-        User user = userService.findUser(uid);
+        // Spring Security에서 accessToken으로 이미 회원조회를 완료하고 AuthenticationPricipal Annotation을 통해서 User 정보를 가져온다.
         UserDto userDto = modelMapper.map(user, UserDto.class);
 
         return responseService.getSingleResult(userDto);
@@ -73,12 +72,11 @@ public class UserController {
     @ApiOperation(value = "회원 수정", notes = "회원정보를 수정한다")
     @PutMapping(value = "/user")
     public SingleResult<UserDto> modify(
+            @ApiIgnore @AuthenticationPrincipal User user,
             @ApiParam(value = "회원이름", required = true) @RequestBody UpdateDto updateDto) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String uid = authentication.getName();
-
-        User user = userService.updateUser(uid, updateDto.getName());
+        user.setName(updateDto.getName());
+        user = userService.updateUser(user);
 
         UserDto userDto = modelMapper.map(user, UserDto.class);
 
@@ -90,12 +88,11 @@ public class UserController {
     })
     @ApiOperation(value = "회원 삭제", notes = "회원번호(msrl)로 회원정보를 삭제한다")
     @DeleteMapping(value = "/user")
-    public CommonResult delete() {
+    public CommonResult delete(
+            @ApiIgnore @AuthenticationPrincipal User user
+    ) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = authentication.getName();
-
-        userService.deleteUser(id);
+        userService.deleteUser(user);
         return responseService.getSuccessResult();
     }
 }

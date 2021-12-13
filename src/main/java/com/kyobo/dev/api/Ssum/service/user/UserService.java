@@ -50,25 +50,14 @@ public class UserService {
         return Optional.ofNullable(userJpaRepo.findAll(pageable)).orElseThrow(CUserNotFoundException::new);
     }
 
-    public boolean insertUser(User user) {
-        userJpaRepo.save(user);
-        return true;
+    public User updateUser(User user) {
+        return userJpaRepo.save(user);
     }
 
-    public User updateUser(String uid, String name) {
-
-        User user = findUser(uid);
-        user.setName(name);
-        return user;
-    }
-
-    public boolean deleteUser(String uid) {
-
-        User user = Optional.ofNullable(userJpaRepo.findByUid(uid)).orElseThrow(CUserNotFoundException::new);
-
+    public boolean deleteUser(User user) {
         readingHistoryJpaRepo.deleteReadingHistoryByUser(user);
         postJpaRepo.deletePostByUser(user);
-        userJpaRepo.deleteById(user.getMsrl());
+        userJpaRepo.delete(user);
 
         return true;
     }

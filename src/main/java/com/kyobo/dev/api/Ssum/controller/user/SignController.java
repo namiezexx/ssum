@@ -20,9 +20,14 @@ import com.kyobo.dev.api.Ssum.service.user.UserService;
 import com.kyobo.dev.api.Ssum.service.social.KakaoService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -55,7 +60,7 @@ public class SignController {
 
         // 사용자가 로그인을 하면 refreshToken을 DB에 보관하고 refreshToken 갱신 요청 시 비교하여 갱신처리한다.
         user.setRefreshToken(tokenDto.getRefreshToken());
-        userJpaRepo.save(user);
+        userService.updateUser(user);
 
         return responseService.getSingleResult(tokenDto);
     }
@@ -72,7 +77,7 @@ public class SignController {
         TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles());
 
         user.setRefreshToken(tokenDto.getRefreshToken());
-        userJpaRepo.save(user);
+        userService.updateUser(user);
 
         return responseService.getSingleResult(tokenDto);
     }
@@ -83,7 +88,7 @@ public class SignController {
 
         userService.checkUserPresent(joinDto.getId());
 
-        userJpaRepo.save(User.builder()
+        userService.updateUser(User.builder()
                 .uid(joinDto.getId())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
                 .name(joinDto.getName())
@@ -102,7 +107,7 @@ public class SignController {
         KakaoProfile profile = kakaoService.getKakaoProfile(socialJoinDto.getAccessToken());
         userService.checkSocialUserPresent(String.valueOf(profile.getId()), provider);
 
-        userJpaRepo.save(User.builder()
+        userService.updateUser(User.builder()
                 .uid(String.valueOf(profile.getId()))
                 .provider(provider)
                 .name(socialJoinDto.getName())
@@ -116,7 +121,8 @@ public class SignController {
 
     @ApiOperation(value = "accessToken 갱신", notes = "로그인 시 부여받은 refreshToken으로 accessToken을 갱신한다.")
     @PostMapping(value = "/signin/token")
-    public SingleResult<TokenDto> tokenUpdate(@ApiParam(value = "토큰 갱신 데이타", required = true) @RequestBody RefreshTokenDto refreshTokenDto) {
+    public SingleResult<TokenDto> tokenUpdate(
+            @ApiParam(value = "토큰 갱신 데이타", required = true) @RequestBody RefreshTokenDto refreshTokenDto) {
 
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshTokenDto.getRefreshToken());
         String uid = authentication.getName();
