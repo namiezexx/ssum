@@ -60,7 +60,7 @@ public class BoardService {
 
         Post post = findPost(postId);
 
-        if (!user.getUid().equals(post.getUser().getUid()))
+        if (!user.getEmail().equals(post.getPostOwner().getEmail()))
             throw new CNotOwnerException();
 
         // 영속성 컨텍스트의 변경감지(dirty checking) 기능에 의해 조회한 Post내용을 변경만 해도 Update쿼리가 실행됩니다.
@@ -72,7 +72,7 @@ public class BoardService {
 
         Post post = findPost(postId);
 
-        if (!user.getUid().equals(post.getUser().getUid()))
+        if (!user.getEmail().equals(post.getPostOwner().getEmail()))
             throw new CNotOwnerException();
 
         readingHistoryJpaRepo.deleteReadingHistoryByPost(post);

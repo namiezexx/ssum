@@ -72,12 +72,12 @@ public class PostSearchControllerTest {
     public void loginTest() throws Exception {
 
         LoginDto loginDto = new LoginDto();
-        loginDto.setId("test1@naver.com");
+        loginDto.setEmail("test1@naver.com");
         loginDto.setPassword("12345");
 
         String content = objectMapper.writeValueAsString(loginDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/v1/signin")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/v1/login")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())

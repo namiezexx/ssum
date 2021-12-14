@@ -26,24 +26,24 @@ public class UserService {
     private final PostJpaRepo postJpaRepo;
     private final ReadingHistoryJpaRepo readingHistoryJpaRepo;
 
-    public void checkUserPresent(String uid) {
+    public void checkUserPresentByEmail(String email) {
 
-        Optional<User> user = Optional.ofNullable(userJpaRepo.findByUid(uid));
+        Optional<User> user = Optional.ofNullable(userJpaRepo.findByEmail(email));
         user.ifPresent(u -> {
             throw new CUserExistException();
         });
     }
 
-    public void checkSocialUserPresent(String uid, String provider) {
+    public void checkSocialUserPresentBySocialId(String socialId, String provider) {
 
-        Optional<User> user = Optional.ofNullable(userJpaRepo.findByUidAndProvider(uid, provider));
+        Optional<User> user = Optional.ofNullable(userJpaRepo.findByEmailAndProvider(socialId, provider));
         user.ifPresent(u -> {
             throw new CUserExistException();
         });
     }
 
-    public User findUser(String uid) {
-        return Optional.ofNullable(userJpaRepo.findByUid(uid)).orElseThrow(CUserNotFoundException::new);
+    public User findUserByEmail(String email) {
+        return Optional.ofNullable(userJpaRepo.findByEmail(email)).orElseThrow(CUserNotFoundException::new);
     }
 
     public Page<User> findUsers(Pageable pageable) {

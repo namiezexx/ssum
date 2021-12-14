@@ -72,13 +72,13 @@ public class InitialCommandLineRunner implements CommandLineRunner {
 
         for(int i=1; i<=index; i++) {
 
-            String uid = "test" + i + "@naver.com";
+            String email = "test" + i + "@naver.com";
             String name = "홍길동" + i;
             String title = "title" + i;
             String contents = "예제 Contents" + i;
 
             User user = User.builder()
-                    .uid(uid)
+                    .email(email)
                     .password(passwordEncoder.encode("12345"))
                     .name(name)
                     .phone("01012341234")
@@ -93,8 +93,8 @@ public class InitialCommandLineRunner implements CommandLineRunner {
 
         /*Random random = new Random();
         for(int i=1; i<=index; i++) {
-            String uid = "test" + i + "@naver.com";
-            boardService.updateReadingHistory(uid, random.nextInt(100)+1);
+            String email = "test" + i + "@naver.com";
+            boardService.updateReadingHistory(email, random.nextInt(100)+1);
         }*/
     }
 }

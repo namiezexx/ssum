@@ -21,9 +21,8 @@ public class Board extends CommonDateEntity {
     @Column(nullable = false, length = 100)
     private String name;
 
-    //@JsonManagedReference
-    @OneToMany(mappedBy = "postId")
-    private List<Post> posts;
+    //@OneToMany(mappedBy = "postId")
+    //private List<Post> posts;
 
     public Board(String name) {
         this.name = name;

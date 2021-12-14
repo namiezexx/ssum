@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
-import com.kyobo.dev.api.Ssum.model.request.user.JoinDto;
+import com.kyobo.dev.api.Ssum.model.request.board.ReplyRequestDto;
 import com.kyobo.dev.api.Ssum.model.request.user.LoginDto;
-import com.kyobo.dev.api.Ssum.model.request.user.RefreshTokenDto;
-import com.kyobo.dev.api.Ssum.model.request.user.UpdateDto;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -37,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.DisplayName.class)  // Test Cash 의 순서를 @DisplayName 어노테이션 순서로 실행.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)  // Test 를 진행하며 accessToken, refreshToken 같은 공유 자원을 모든 메소드가 공유하도록 설정.
-public class BoardControllerTest {
+public class ReplyControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -94,76 +92,24 @@ public class BoardControllerTest {
         accessToken = mapData.get("accessToken");
     }
 
-    @DisplayName("2.게시판 정보 조회 테스트")
-    @Test
-    public void getBoardTest() throws Exception {
-
-        String pathVariable = "free";
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/" + pathVariable))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0));
-    }
-
-    @DisplayName("3.게시판 글 작성 테스트")
+    @DisplayName("2.댓글 작성 테스트")
     @Transactional
     @Test
-    public void writePostTest() throws Exception {
+    public void addReplyTest() throws Exception {
 
-        String pathVariable = "free";
+        String pathVariable = "1";
 
-        PostDto postDto = new PostDto();
-        postDto.setAuthor("김영한");
-        postDto.setTitle("Spring Data JPA");
-        postDto.setContent("JPA 영속성 컨텍스트에 대한 이해");
-        postDto.setThumbnailUrl("http://localhost:8080/image.jpg");
+        ReplyRequestDto replyRequestDto = new ReplyRequestDto();
+        replyRequestDto.setContents("테스트 댓글입니다.");
 
-        String content = objectMapper.writeValueAsString(postDto);
+        String content = objectMapper.writeValueAsString(replyRequestDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/board/" + pathVariable)
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/board/reply/" + pathVariable)
                         .header("X-AUTH-TOKEN", accessToken)
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.author").value("김영한"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.likes").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.views").value(0));
-    }
-
-    @DisplayName("4.게시판 글 수정 테스트")
-    @Test
-    public void findUserTest() throws Exception {
-
-        String pathVariable = "1";
-
-        PostDto postDto = new PostDto();
-        postDto.setAuthor("김철수");
-        postDto.setTitle("수정테스트");
-        postDto.setContent("수정테스트 내용");
-        postDto.setThumbnailUrl("http://localhost:8080/image.jpg");
-
-        String content = objectMapper.writeValueAsString(postDto);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/v1/board/post/" + pathVariable)
-                        .header("X-AUTH-TOKEN", accessToken)
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.author").value("김철수"));
-    }
-
-    @DisplayName("5.게시판 글 삭제 테스트")
-    @Transactional
-    @Test
-    public void deleteUserTest() throws Exception {
-
-        String pathVariable = "1";
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/board/post/" + pathVariable)
-                        .header("X-AUTH-TOKEN", accessToken))
-                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0));
     }
+
 }

@@ -12,7 +12,7 @@ public interface UserJpaRepo extends JpaRepository<User, Long> {
 
     Page<User> findAll(Pageable pageable);
 
-    User findByUid(String email);
-    User findByUidAndProvider(String uid, String provider);
+    User findByEmail(String email);
+    User findByEmailAndProvider(String uid, String provider);
 
 }

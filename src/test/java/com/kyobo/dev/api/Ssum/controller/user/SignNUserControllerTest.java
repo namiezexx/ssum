@@ -76,7 +76,7 @@ public class SignNUserControllerTest {
     public void joinTest() throws Exception {
 
         JoinDto joinDto = new JoinDto();
-        joinDto.setId("test@naver.com");
+        joinDto.setEmail("test@naver.com");
         joinDto.setPassword("12345");
         joinDto.setName("이재석");
         joinDto.setPhone("01035221767");
@@ -84,7 +84,7 @@ public class SignNUserControllerTest {
 
         String content = objectMapper.writeValueAsString(joinDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/signup")
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/join")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -96,12 +96,12 @@ public class SignNUserControllerTest {
     public void loginTest() throws Exception {
 
         LoginDto loginDto = new LoginDto();
-        loginDto.setId("test1@naver.com");
+        loginDto.setEmail("test1@naver.com");
         loginDto.setPassword("12345");
 
         String content = objectMapper.writeValueAsString(loginDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/v1/signin")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/v1/login")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -126,7 +126,7 @@ public class SignNUserControllerTest {
 
         String content = objectMapper.writeValueAsString(refreshTokenDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/v1/signin/token")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/v1/refresh/token")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -149,7 +149,7 @@ public class SignNUserControllerTest {
                         .header("X-AUTH-TOKEN", accessToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.msrl").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId").value(1L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value("홍길동1"));
     }
 
@@ -185,7 +185,7 @@ public class SignNUserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.first").value(true))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.last").value(false))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.list[0].msrl").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.list[0].userId").value(1L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.list[0].name").value("홍길동1"));
     }
 

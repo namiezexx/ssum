@@ -9,31 +9,26 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class ReadingHistory extends CommonDateEntity {
+public class Reply extends CommonDateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long readingHistoryId;
+    private Long replyId;
 
-    @Column(columnDefinition = "integer default 0")
-    private int readingCount;
+    @Column(nullable = false, length = 100)
+    private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private User user;
+    private User replyOwner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId")
     private Post post;
 
-    public ReadingHistory(int readingCount, User user, Post post) {
-        this.readingCount = readingCount;
-        this.user = user;
+    public Reply(String contents, User replyOwner, Post post) {
+        this.contents = contents;
+        this.replyOwner = replyOwner;
         this.post = post;
-    }
-
-    public ReadingHistory addReadingCount() {
-        this.readingCount++;
-        return this;
     }
 }

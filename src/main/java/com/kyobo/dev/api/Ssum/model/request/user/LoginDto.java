@@ -13,7 +13,7 @@ import lombok.ToString;
 public class LoginDto {
 
     @ApiModelProperty(value = "아이디", example = "test@naver.com", required = true)
-    private String id;
+    private String email;
 
     @ApiModelProperty(value = "패스워드", example = "12345", required = true)
     private String password;

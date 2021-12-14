@@ -43,15 +43,15 @@ public class Post extends CommonDateEntity {
 
     //@JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "msrl")
-    private User user;  // 게시글 - 회원의 관계 - N:1
+    @JoinColumn(name = "userId")
+    private User postOwner;  // 게시글 - 회원의 관계 - N:1
 
-    @OneToMany(mappedBy = "readingHistoryId")
-    private List<ReadingHistory> readingHistories;
+    //@OneToMany(mappedBy = "readingHistoryId")
+    //private List<ReadingHistory> readingHistories;
 
     // 생성자
-    public Post(User user, Board board, String author, String title, String content, String thumbnailUrl) {
-        this.user = user;
+    public Post(User postOwner, Board board, String author, String title, String content, String thumbnailUrl) {
+        this.postOwner = postOwner;
         this.board = board;
         this.author = author;
         this.title = title;

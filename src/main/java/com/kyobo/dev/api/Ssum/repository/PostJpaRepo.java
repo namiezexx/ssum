@@ -18,11 +18,11 @@ public interface PostJpaRepo extends JpaRepository<Post, Long> {
     Page<Post> findByBoard(Board board, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
 
-    @Query("select distinct p from Post p join fetch p.board b join fetch p.user where p.postId = :postId")
+    @Query("select distinct p from Post p join fetch p.board b join fetch p.postOwner where p.postId = :postId")
     Post findPostByQuery(@Param("postId") Long postId);
 
     @Transactional
     @Modifying
-    @Query("delete from Post p where p.user = :user")
+    @Query("delete from Post p where p.postOwner = :user")
     void deletePostByUser(@Param("user") User user);
 }

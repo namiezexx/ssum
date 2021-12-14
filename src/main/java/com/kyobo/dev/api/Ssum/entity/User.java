@@ -29,10 +29,10 @@ public class User extends CommonDateEntity implements UserDetails {
 
     @Id // pk
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long msrl;
+    private long userId;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String uid;
+    private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(length = 100)
@@ -53,12 +53,11 @@ public class User extends CommonDateEntity implements UserDetails {
     @Column(length = 255)
     private String refreshToken;
 
-    //@JsonManagedReference
-    @OneToMany(mappedBy = "postId")
-    private List<Post> posts;
+    //@OneToMany(mappedBy = "postId")
+    //private List<Post> posts;
 
-    @OneToMany(mappedBy = "readingHistoryId")
-    private List<ReadingHistory> readingHistories;
+    //@OneToMany(mappedBy = "readingHistoryId")
+    //private List<ReadingHistory> readingHistories;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -80,7 +79,7 @@ public class User extends CommonDateEntity implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public String getUsername() {
-        return this.uid;
+        return this.email;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

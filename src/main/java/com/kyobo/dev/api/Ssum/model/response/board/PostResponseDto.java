@@ -18,6 +18,6 @@ public class PostResponseDto {
     private int views;
     private int likes;
     private BoardDto board;
-    private UserDto user;
+    private UserDto postOwner;
 
 }

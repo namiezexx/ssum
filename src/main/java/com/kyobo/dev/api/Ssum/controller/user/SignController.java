@@ -49,14 +49,14 @@ public class SignController {
     private final PasswordEncoder passwordEncoder;
 
     @ApiOperation(value = "로그인", notes = "이메일 회원 로그인을 한다.")
-    @PostMapping(value = "/signin")
-    public SingleResult<TokenDto> signin(@ApiParam(value = "로그인 데이타", required = true) @RequestBody LoginDto loginDto) {
+    @PostMapping(value = "/login")
+    public SingleResult<TokenDto> login(@ApiParam(value = "로그인 데이타", required = true) @RequestBody LoginDto loginDto) {
 
-        User user = userService.findUser(loginDto.getId());
+        User user = userService.findUserByEmail(loginDto.getEmail());
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword()))
             throw new CEmailSigninFailedException();
 
-        TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles());
+        TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getUserId()), user.getRoles());
 
         // 사용자가 로그인을 하면 refreshToken을 DB에 보관하고 refreshToken 갱신 요청 시 비교하여 갱신처리한다.
         user.setRefreshToken(tokenDto.getRefreshToken());
@@ -66,15 +66,15 @@ public class SignController {
     }
 
     @ApiOperation(value = "소셜 로그인", notes = "소셜 회원 로그인을 한다.")
-    @PostMapping(value = "/signin/{provider}")
-    public SingleResult<TokenDto> signinByProvider(
+    @PostMapping(value = "/login/{provider}")
+    public SingleResult<TokenDto> loginByProvider(
             @ApiParam(value = "서비스 제공자 provider", required = true, defaultValue = "kakao") @PathVariable String provider,
             @ApiParam(value = "소셜 access_token", required = true) @RequestBody SocialLoginDto socialLoginDto) {
 
         KakaoProfile profile = kakaoService.getKakaoProfile(socialLoginDto.getAccessToken());
-        User user = Optional.ofNullable(userJpaRepo.findByUidAndProvider(String.valueOf(profile.getId()), provider)).orElseThrow(CUserNotFoundException::new);
+        User user = Optional.ofNullable(userJpaRepo.findByEmailAndProvider(String.valueOf(profile.getId()), provider)).orElseThrow(CUserNotFoundException::new);
 
-        TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles());
+        TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getUserId()), user.getRoles());
 
         user.setRefreshToken(tokenDto.getRefreshToken());
         userService.updateUser(user);
@@ -83,13 +83,13 @@ public class SignController {
     }
 
     @ApiOperation(value = "가입", notes = "회원가입을 한다.")
-    @PostMapping(value = "/signup")
-    public CommonResult signup(@ApiParam(value = "가입 데이타", required = true) @RequestBody JoinDto joinDto) {
+    @PostMapping(value = "/join")
+    public CommonResult join(@ApiParam(value = "가입 데이타", required = true) @RequestBody JoinDto joinDto) {
 
-        userService.checkUserPresent(joinDto.getId());
+        userService.checkUserPresentByEmail(joinDto.getEmail());
 
         userService.updateUser(User.builder()
-                .uid(joinDto.getId())
+                .email(joinDto.getEmail())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
                 .name(joinDto.getName())
                 .phone(joinDto.getPhone())
@@ -100,15 +100,15 @@ public class SignController {
     }
 
     @ApiOperation(value = "소셜 계정 가입", notes = "소셜 계정 회원가입을 한다.")
-    @PostMapping(value = "/signup/{provider}")
+    @PostMapping(value = "/join/{provider}")
     public CommonResult signupProvider(@ApiParam(value = "서비스 제공자 provider", required = true, defaultValue = "kakao") @PathVariable String provider,
                                        @ApiParam(value = "가입 데이타", required = true) @RequestBody SocialJoinDto socialJoinDto) {
 
         KakaoProfile profile = kakaoService.getKakaoProfile(socialJoinDto.getAccessToken());
-        userService.checkSocialUserPresent(String.valueOf(profile.getId()), provider);
+        userService.checkSocialUserPresentBySocialId(String.valueOf(profile.getId()), provider);
 
         userService.updateUser(User.builder()
-                .uid(String.valueOf(profile.getId()))
+                .email(String.valueOf(profile.getId()))
                 .provider(provider)
                 .name(socialJoinDto.getName())
                 .phone(socialJoinDto.getPhone())
@@ -120,16 +120,16 @@ public class SignController {
     }
 
     @ApiOperation(value = "accessToken 갱신", notes = "로그인 시 부여받은 refreshToken으로 accessToken을 갱신한다.")
-    @PostMapping(value = "/signin/token")
+    @PostMapping(value = "/refresh/token")
     public SingleResult<TokenDto> tokenUpdate(
             @ApiParam(value = "토큰 갱신 데이타", required = true) @RequestBody RefreshTokenDto refreshTokenDto) {
 
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshTokenDto.getRefreshToken());
-        String uid = authentication.getName();
+        String email = authentication.getName();
 
-        User user = userService.findUser(uid);
+        User user = userService.findUserByEmail(email);
 
-        TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getMsrl()), user.getRoles());
+        TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getUserId()), user.getRoles());
         tokenDto.setRefreshToken(user.getRefreshToken());
 
         return responseService.getSingleResult(tokenDto);
