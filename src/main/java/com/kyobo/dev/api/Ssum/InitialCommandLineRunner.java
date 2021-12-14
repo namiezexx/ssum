@@ -8,6 +8,7 @@ import com.kyobo.dev.api.Ssum.repository.PostJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
 import com.kyobo.dev.api.Ssum.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,9 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class InitialCommandLineRunner implements CommandLineRunner {
 
+    @Value("${spring.jpa.hibernate.ddl-auto}")
+    private String ddlAuto;
+
     private final UserJpaRepo userJpaRepo;
     private final BoardJpaRepo boardJpaRepo;
     private final PostJpaRepo postJpaRepo;
@@ -29,8 +33,23 @@ public class InitialCommandLineRunner implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
 
+    public String getDdlAuto() {
+        return ddlAuto;
+    }
+
+    public void setDdlAuto(String ddlAuto) {
+        this.ddlAuto = ddlAuto;
+    }
+
     @Override
     public void run(String... args) throws Exception {
+
+        if(ddlAuto.equals("create")){
+            initData();
+        }
+    }
+
+    public void initData() {
 
         final int index = 100;
 

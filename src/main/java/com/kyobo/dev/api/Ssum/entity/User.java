@@ -72,6 +72,8 @@ public class User extends CommonDateEntity implements UserDetails {
     public void setName(String name) {
         this.name = name;
     }
+    public void setPhone(String phone) { this.phone = phone; }
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
 
     public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
 

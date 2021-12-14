@@ -76,6 +76,8 @@ public class UserController {
             @ApiParam(value = "회원이름", required = true) @RequestBody UpdateDto updateDto) {
 
         user.setName(updateDto.getName());
+        user.setPhone(updateDto.getPhone());
+        user.setProfileImageUrl(updateDto.getProfileImageUrl());
         user = userService.updateUser(user);
 
         UserDto userDto = modelMapper.map(user, UserDto.class);
@@ -92,6 +94,7 @@ public class UserController {
             @ApiIgnore @AuthenticationPrincipal User user
     ) {
 
+        System.out.println("delete user : " + user.getUid());
         userService.deleteUser(user);
         return responseService.getSuccessResult();
     }
