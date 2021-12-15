@@ -7,9 +7,8 @@ import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.ReadingHistory;
 import com.kyobo.dev.api.Ssum.entity.User;
 import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
-import com.kyobo.dev.api.Ssum.repository.BoardJpaRepo;
-import com.kyobo.dev.api.Ssum.repository.PostJpaRepo;
-import com.kyobo.dev.api.Ssum.repository.ReadingHistoryJpaRepo;
+import com.kyobo.dev.api.Ssum.repository.*;
+import com.kyobo.dev.api.Ssum.service.comment.CommentService;
 import com.kyobo.dev.api.Ssum.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,8 +26,6 @@ public class BoardService {
     private final BoardJpaRepo boardJpaRepo;
     private final PostJpaRepo postJpaRepo;
     private final ReadingHistoryJpaRepo readingHistoryJpaRepo;
-
-    private final UserService userService;
 
     public Board findBoard(String boardName) {
         return Optional.ofNullable(boardJpaRepo.findByName(boardName)).orElseThrow(CResourceNotExistException::new);
@@ -75,7 +72,6 @@ public class BoardService {
         if (!user.getEmail().equals(post.getPostOwner().getEmail()))
             throw new CNotOwnerException();
 
-        readingHistoryJpaRepo.deleteReadingHistoryByPost(post);
         postJpaRepo.delete(post);
 
         return true;

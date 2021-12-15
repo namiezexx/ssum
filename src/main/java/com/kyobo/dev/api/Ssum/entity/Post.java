@@ -1,7 +1,5 @@
 package com.kyobo.dev.api.Ssum.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kyobo.dev.api.Ssum.entity.common.CommonDateEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,8 +44,11 @@ public class Post extends CommonDateEntity {
     @JoinColumn(name = "userId")
     private User postOwner;  // 게시글 - 회원의 관계 - N:1
 
-    //@OneToMany(mappedBy = "readingHistoryId")
-    //private List<ReadingHistory> readingHistories;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<ReadingHistory> readingHistories;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 
     // 생성자
     public Post(User postOwner, Board board, String author, String title, String content, String thumbnailUrl) {

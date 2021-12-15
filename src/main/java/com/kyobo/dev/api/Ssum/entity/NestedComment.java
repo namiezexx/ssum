@@ -5,16 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Comment extends CommonDateEntity {
+public class NestedComment extends CommonDateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long nestedCommentId;
 
     @Column(nullable = false, length = 100)
     private String contents;
@@ -28,31 +27,20 @@ public class Comment extends CommonDateEntity {
     @Column(nullable = false, length = 100)
     private String userName;
 
-    @Column(columnDefinition = "integer default 0")
-    private Integer nestedCommentCount;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "commentId")
+    private Comment comment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
-    private Post post;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
-    private List<NestedComment> nestedComments;
-
-    public Comment(String contents, User user, Post post) {
+    public NestedComment(String contents, User user, Comment comment) {
         this.contents = contents;
         this.userId = user.getUserId();
         this.userEmail = user.getEmail();
         this.userName = user.getName();
-        this.nestedCommentCount = 0;
-        this.post = post;
+        this.comment = comment;
     }
 
     public void setContents(String contents) {
         this.contents = contents;
     }
 
-    public Comment addNestedCommentCount() {
-        this.nestedCommentCount++;
-        return this;
-    }
 }

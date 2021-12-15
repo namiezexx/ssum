@@ -1,7 +1,6 @@
 package com.kyobo.dev.api.Ssum.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kyobo.dev.api.Ssum.entity.common.CommonDateEntity;
 import lombok.AllArgsConstructor;
@@ -53,11 +52,11 @@ public class User extends CommonDateEntity implements UserDetails {
     @Column(length = 255)
     private String refreshToken;
 
-    //@OneToMany(mappedBy = "postId")
-    //private List<Post> posts;
+    @OneToMany(mappedBy = "postOwner", cascade = CascadeType.REMOVE)
+    private List<Post> posts;
 
-    //@OneToMany(mappedBy = "readingHistoryId")
-    //private List<ReadingHistory> readingHistories;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReadingHistory> readingHistories;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

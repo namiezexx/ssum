@@ -1,24 +1,20 @@
-package com.kyobo.dev.api.Ssum.controller.board;
+package com.kyobo.dev.api.Ssum.controller.comment;
 
 import com.kyobo.dev.api.Ssum.entity.Comment;
-import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.request.board.CommentRequestDto;
+import com.kyobo.dev.api.Ssum.model.request.comment.CommentRequestDto;
 import com.kyobo.dev.api.Ssum.model.response.CommonResult;
 import com.kyobo.dev.api.Ssum.model.response.ListResult;
 import com.kyobo.dev.api.Ssum.model.response.SingleResult;
-import com.kyobo.dev.api.Ssum.model.response.board.CommentResponseDto;
-import com.kyobo.dev.api.Ssum.model.response.board.PostResponseDto;
+import com.kyobo.dev.api.Ssum.model.response.comment.CommentResponseDto;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
-import com.kyobo.dev.api.Ssum.service.board.CommentsService;
+import com.kyobo.dev.api.Ssum.service.comment.CommentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.TypeMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/v1/board")
 public class CommentController {
 
-    private final CommentsService commentsService;
+    private final CommentService commentsService;
     private final ResponseService responseService;
 
     private final ModelMapper modelMapper;
@@ -74,7 +70,7 @@ public class CommentController {
     })
     @ApiOperation(value = "댓글 수정", notes = "게시판의 댓글을 수정한다.")
     @PutMapping(value = "/comment/{commentId}")
-    public CommonResult updateComment(
+    public SingleResult<CommentResponseDto> updateComment(
             @ApiIgnore @AuthenticationPrincipal User user,
             @PathVariable long commentId,
             @RequestBody CommentRequestDto commentRequestDto) {

@@ -7,10 +7,7 @@ import com.kyobo.dev.api.Ssum.entity.Board;
 import com.kyobo.dev.api.Ssum.entity.Comment;
 import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.repository.CommentJpaRepo;
-import com.kyobo.dev.api.Ssum.repository.PostJpaRepo;
-import com.kyobo.dev.api.Ssum.repository.ReadingHistoryJpaRepo;
-import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
+import com.kyobo.dev.api.Ssum.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +26,7 @@ public class UserService {
     private final PostJpaRepo postJpaRepo;
     private final ReadingHistoryJpaRepo readingHistoryJpaRepo;
     private final CommentJpaRepo commentJpaRepo;
+    private final NestedCommentJpaRepo nestedCommentJpaRepo;
 
     public void checkUserPresentByEmail(String email) {
 
@@ -60,9 +58,7 @@ public class UserService {
 
     public boolean deleteUser(User user) {
 
-        commentJpaRepo.deleteCommentByUserId(user.getUserId());
-        readingHistoryJpaRepo.deleteReadingHistoryByUser(user);
-        postJpaRepo.deletePostByUser(user);
+        // user 의 경우 JWT를 통해 이미 조회 후 생성한 인스턴스이므로 별도 체크 없이 삭제한다.
         userJpaRepo.delete(user);
 
         return true;

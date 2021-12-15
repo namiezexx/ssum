@@ -1,8 +1,6 @@
 package com.kyobo.dev.api.Ssum.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kyobo.dev.api.Ssum.entity.common.CommonDateEntity;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,8 +19,8 @@ public class Board extends CommonDateEntity {
     @Column(nullable = false, length = 100)
     private String name;
 
-    //@OneToMany(mappedBy = "postId")
-    //private List<Post> posts;
+    @OneToMany(mappedBy = "board")
+    private List<Post> posts;
 
     public Board(String name) {
         this.name = name;

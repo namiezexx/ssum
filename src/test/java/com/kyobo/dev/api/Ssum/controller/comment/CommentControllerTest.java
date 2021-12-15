@@ -1,10 +1,11 @@
-package com.kyobo.dev.api.Ssum.controller.board;
+package com.kyobo.dev.api.Ssum.controller.comment;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.kyobo.dev.api.Ssum.model.request.board.CommentRequestDto;
+import com.kyobo.dev.api.Ssum.model.request.comment.CommentRequestDto;
+import com.kyobo.dev.api.Ssum.model.request.comment.NestedCommentRequestDto;
 import com.kyobo.dev.api.Ssum.model.request.user.LoginDto;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -147,6 +148,26 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.contents").value("수정 댓글입니다."));
+
+    }
+
+    @DisplayName("4.1 대댓글 추가 테스트")
+    //@Transactional
+    @Test
+    public void addNestedCommentTest() throws Exception {
+
+        NestedCommentRequestDto nestedCommentRequestDto = new NestedCommentRequestDto();
+        nestedCommentRequestDto.setContents("대댓글입니다.");
+
+        String content = objectMapper.writeValueAsString(nestedCommentRequestDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/board/nested/comment/" + commentId)
+                        .header("X-AUTH-TOKEN", accessToken)
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.contents").value("대댓글입니다."));
 
     }
 
