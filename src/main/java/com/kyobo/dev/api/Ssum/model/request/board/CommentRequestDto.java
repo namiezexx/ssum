@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ReplyRequestDto {
+public class CommentRequestDto {
 
     @ApiModelProperty(value = "내용", example = "댓글입니다.", required = true)
     private String contents;

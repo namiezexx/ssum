@@ -16,7 +16,7 @@ public class ReadingHistory extends CommonDateEntity {
     private Long readingHistoryId;
 
     @Column(columnDefinition = "integer default 0")
-    private int readingCount;
+    private Integer readingCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

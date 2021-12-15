@@ -31,10 +31,10 @@ public class Post extends CommonDateEntity {
     private String thumbnailUrl;
 
     @Column(columnDefinition = "integer default 0")
-    private int views;
+    private Integer views;
 
     @Column(columnDefinition = "integer default 0")
-    private int likes;
+    private Integer likes;
 
     //@JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,6 +57,8 @@ public class Post extends CommonDateEntity {
         this.title = title;
         this.content = content;
         this.thumbnailUrl = thumbnailUrl;
+        this.views = 0;
+        this.likes = 0;
     }
 
     // 수정시 데이터 처리

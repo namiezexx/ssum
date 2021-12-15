@@ -4,8 +4,10 @@ import com.kyobo.dev.api.Ssum.advice.exception.CResourceNotExistException;
 import com.kyobo.dev.api.Ssum.advice.exception.CUserExistException;
 import com.kyobo.dev.api.Ssum.advice.exception.CUserNotFoundException;
 import com.kyobo.dev.api.Ssum.entity.Board;
+import com.kyobo.dev.api.Ssum.entity.Comment;
 import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.User;
+import com.kyobo.dev.api.Ssum.repository.CommentJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.PostJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.ReadingHistoryJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +28,7 @@ public class UserService {
     private final UserJpaRepo userJpaRepo;
     private final PostJpaRepo postJpaRepo;
     private final ReadingHistoryJpaRepo readingHistoryJpaRepo;
+    private final CommentJpaRepo commentJpaRepo;
 
     public void checkUserPresentByEmail(String email) {
 
@@ -55,6 +59,8 @@ public class UserService {
     }
 
     public boolean deleteUser(User user) {
+
+        commentJpaRepo.deleteCommentByUserId(user.getUserId());
         readingHistoryJpaRepo.deleteReadingHistoryByUser(user);
         postJpaRepo.deletePostByUser(user);
         userJpaRepo.delete(user);

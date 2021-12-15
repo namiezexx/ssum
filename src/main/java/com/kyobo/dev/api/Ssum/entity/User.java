@@ -29,7 +29,7 @@ public class User extends CommonDateEntity implements UserDetails {
 
     @Id // pk
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+    private Long userId;
 
     @Column(nullable = false, unique = true, length = 50)
     private String email;

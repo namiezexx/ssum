@@ -122,6 +122,7 @@ public class PostSearchControllerTest {
     }
 
     @DisplayName("5.게시글 상세 조회 테스트")
+    @Transactional
     @Test
     public void getPostTest() throws Exception {
 

@@ -6,13 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
-public class ReplyResponseDto {
+public class CommentResponseDto {
 
-    private Long replyId;
+    private Long commentId;
     private String contents;
-    private UserDto replyOwner;
-    private PostResponseDto post;
+    private Long userId;
+    private String userEmail;
+    private String userName;
+    private Integer nestedCommentCount;
+    private LocalDateTime modifiedAt;
 }

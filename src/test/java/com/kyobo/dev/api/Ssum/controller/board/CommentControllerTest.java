@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
-import com.kyobo.dev.api.Ssum.model.request.board.ReplyRequestDto;
+import com.kyobo.dev.api.Ssum.model.request.board.CommentRequestDto;
 import com.kyobo.dev.api.Ssum.model.request.user.LoginDto;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -35,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.DisplayName.class)  // Test Cash 의 순서를 @DisplayName 어노테이션 순서로 실행.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)  // Test 를 진행하며 accessToken, refreshToken 같은 공유 자원을 모든 메소드가 공유하도록 설정.
-public class ReplyControllerTest {
+public class CommentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,6 +45,7 @@ public class ReplyControllerTest {
     private ObjectMapper objectMapper;
 
     String accessToken;
+    String commentId;
 
     @BeforeAll
     static void beforeAll() {
@@ -93,23 +92,72 @@ public class ReplyControllerTest {
     }
 
     @DisplayName("2.댓글 작성 테스트")
-    @Transactional
+    //@Transactional
     @Test
-    public void addReplyTest() throws Exception {
+    public void addCommentTest() throws Exception {
 
         String pathVariable = "1";
 
-        ReplyRequestDto replyRequestDto = new ReplyRequestDto();
-        replyRequestDto.setContents("테스트 댓글입니다.");
+        CommentRequestDto commentRequestDto = new CommentRequestDto();
+        commentRequestDto.setContents("테스트 댓글입니다.");
 
-        String content = objectMapper.writeValueAsString(replyRequestDto);
+        String content = objectMapper.writeValueAsString(commentRequestDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/board/reply/" + pathVariable)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/v1/board/comment/" + pathVariable)
                         .header("X-AUTH-TOKEN", accessToken)
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andReturn();
+
+        // MvcResult 객체 통해서 commentId 얻어오기.
+        String responseString = result.getResponse().getContentAsString();
+        Map<String, Object> map = objectMapper.readValue(responseString, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> mapData = (Map<String, Object>) map.get("data");
+        commentId = Integer.toString((Integer) mapData.get("commentId"));
+    }
+
+    @DisplayName("3.댓글 조회 테스트")
+    //@Transactional
+    @Test
+    public void searchCommentTest() throws Exception {
+
+        String pathVariable = "1";
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/comment/" + pathVariable))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0));
     }
 
+    @DisplayName("4.댓글 수정 테스트")
+    //@Transactional
+    @Test
+    public void updateCommentTest() throws Exception {
+
+        CommentRequestDto commentRequestDto = new CommentRequestDto();
+        commentRequestDto.setContents("수정 댓글입니다.");
+
+        String content = objectMapper.writeValueAsString(commentRequestDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/board/comment/" + commentId)
+                        .header("X-AUTH-TOKEN", accessToken)
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.contents").value("수정 댓글입니다."));
+
+    }
+
+    @DisplayName("5.댓글 삭제 테스트")
+    //@Transactional
+    @Test
+    public void deleteCommentTest() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/board/comment/" + commentId)
+                        .header("X-AUTH-TOKEN", accessToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0));
+    }
 }
