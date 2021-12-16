@@ -1,4 +1,4 @@
-package com.kyobo.dev.api.Ssum.model.request.user;
+package com.kyobo.dev.api.Ssum.dto.request.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

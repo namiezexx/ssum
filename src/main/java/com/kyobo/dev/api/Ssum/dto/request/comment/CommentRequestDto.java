@@ -1,4 +1,4 @@
-package com.kyobo.dev.api.Ssum.model.request.comment;
+package com.kyobo.dev.api.Ssum.dto.request.comment;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

@@ -6,10 +6,8 @@ import com.kyobo.dev.api.Ssum.entity.Board;
 import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.ReadingHistory;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
+import com.kyobo.dev.api.Ssum.dto.request.board.PostDto;
 import com.kyobo.dev.api.Ssum.repository.*;
-import com.kyobo.dev.api.Ssum.service.comment.CommentService;
-import com.kyobo.dev.api.Ssum.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,21 +26,25 @@ public class BoardService {
     private final ReadingHistoryJpaRepo readingHistoryJpaRepo;
 
     public Board findBoard(String boardName) {
-        return Optional.ofNullable(boardJpaRepo.findByName(boardName)).orElseThrow(CResourceNotExistException::new);
+        return boardJpaRepo.findByName(boardName)
+                .orElseThrow(CResourceNotExistException::new);
     }
 
     public Post findPost(Long postId) {
-        return Optional.ofNullable(postJpaRepo.findPostByQuery(postId)).orElseThrow(CResourceNotExistException::new);
+        return postJpaRepo.findPostByQuery(postId)
+                .orElseThrow(CResourceNotExistException::new);
     }
 
     // 게시판 이름으로 게시물 리스트 조회.
     public Page<Post> findPosts(String boardName, Pageable pageable) {
         Board board = findBoard(boardName);
-        return Optional.ofNullable(postJpaRepo.findByBoard(board, pageable)).orElseThrow(CResourceNotExistException::new);
+        return postJpaRepo.findByBoard(board, pageable)
+                .orElseThrow(CResourceNotExistException::new);
     }
 
     public Page<Post> findPosts(Pageable pageable) {
-        return Optional.ofNullable(postJpaRepo.findAll(pageable)).orElseThrow(CResourceNotExistException::new);
+        return Optional.of(postJpaRepo.findAll(pageable))
+                .orElseThrow(CResourceNotExistException::new);
     }
 
     // 게시물을 등록합니다. 게시물의 회원UID가 조회되지 않으면 CUserNotFoundException 처리합니다.

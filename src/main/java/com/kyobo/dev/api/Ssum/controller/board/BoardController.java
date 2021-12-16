@@ -3,12 +3,11 @@ package com.kyobo.dev.api.Ssum.controller.board;
 import com.kyobo.dev.api.Ssum.entity.Board;
 import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.response.board.BoardDto;
-import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
-import com.kyobo.dev.api.Ssum.model.response.ListResult;
-import com.kyobo.dev.api.Ssum.model.response.SingleResult;
-import com.kyobo.dev.api.Ssum.model.response.board.PostResponseDto;
+import com.kyobo.dev.api.Ssum.dto.response.board.BoardDto;
+import com.kyobo.dev.api.Ssum.dto.request.board.PostDto;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.SingleResult;
+import com.kyobo.dev.api.Ssum.dto.response.board.PostResponseDto;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
 import com.kyobo.dev.api.Ssum.service.board.BoardService;
 import io.swagger.annotations.Api;
@@ -17,19 +16,11 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Api(tags = {"3. Board"})
 @RequiredArgsConstructor

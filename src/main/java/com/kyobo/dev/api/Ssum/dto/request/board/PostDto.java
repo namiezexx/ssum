@@ -1,4 +1,4 @@
-package com.kyobo.dev.api.Ssum.model.request.board;
+package com.kyobo.dev.api.Ssum.dto.request.board;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

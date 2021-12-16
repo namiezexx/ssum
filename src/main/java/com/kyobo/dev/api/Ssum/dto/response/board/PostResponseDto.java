@@ -1,6 +1,6 @@
-package com.kyobo.dev.api.Ssum.model.response.board;
+package com.kyobo.dev.api.Ssum.dto.response.board;
 
-import com.kyobo.dev.api.Ssum.model.response.user.UserDto;
+import com.kyobo.dev.api.Ssum.dto.response.user.UserDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

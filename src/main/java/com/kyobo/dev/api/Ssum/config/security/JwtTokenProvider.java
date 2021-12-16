@@ -1,7 +1,7 @@
 package com.kyobo.dev.api.Ssum.config.security;
 
 import com.kyobo.dev.api.Ssum.advice.exception.CExpiredAccessTokenException;
-import com.kyobo.dev.api.Ssum.model.response.user.TokenDto;
+import com.kyobo.dev.api.Ssum.dto.response.user.TokenDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

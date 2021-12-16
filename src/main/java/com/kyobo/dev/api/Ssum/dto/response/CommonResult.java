@@ -1,4 +1,4 @@
-package com.kyobo.dev.api.Ssum.model.response;
+package com.kyobo.dev.api.Ssum.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

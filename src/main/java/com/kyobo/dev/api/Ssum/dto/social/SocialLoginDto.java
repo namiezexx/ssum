@@ -1,4 +1,4 @@
-package com.kyobo.dev.api.Ssum.model.social;
+package com.kyobo.dev.api.Ssum.dto.social;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

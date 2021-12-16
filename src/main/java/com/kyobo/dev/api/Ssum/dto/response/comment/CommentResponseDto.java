@@ -1,7 +1,5 @@
-package com.kyobo.dev.api.Ssum.model.response.comment;
+package com.kyobo.dev.api.Ssum.dto.response.comment;
 
-import com.kyobo.dev.api.Ssum.model.request.board.PostDto;
-import com.kyobo.dev.api.Ssum.model.response.user.UserDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

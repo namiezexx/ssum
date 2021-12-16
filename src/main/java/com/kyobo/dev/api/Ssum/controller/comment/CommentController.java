@@ -2,11 +2,11 @@ package com.kyobo.dev.api.Ssum.controller.comment;
 
 import com.kyobo.dev.api.Ssum.entity.Comment;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.request.comment.CommentRequestDto;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
-import com.kyobo.dev.api.Ssum.model.response.ListResult;
-import com.kyobo.dev.api.Ssum.model.response.SingleResult;
-import com.kyobo.dev.api.Ssum.model.response.comment.CommentResponseDto;
+import com.kyobo.dev.api.Ssum.dto.request.comment.CommentRequestDto;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.ListResult;
+import com.kyobo.dev.api.Ssum.dto.response.SingleResult;
+import com.kyobo.dev.api.Ssum.dto.response.comment.CommentResponseDto;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
 import com.kyobo.dev.api.Ssum.service.comment.CommentService;
 import io.swagger.annotations.Api;

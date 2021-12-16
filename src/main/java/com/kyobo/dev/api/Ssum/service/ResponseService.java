@@ -1,11 +1,10 @@
 package com.kyobo.dev.api.Ssum.service;
 
 import com.kyobo.dev.api.Ssum.advice.exception.CResourceNotExistException;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
-import com.kyobo.dev.api.Ssum.model.response.ListResult;
-import com.kyobo.dev.api.Ssum.model.response.SingleResult;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.ListResult;
+import com.kyobo.dev.api.Ssum.dto.response.SingleResult;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

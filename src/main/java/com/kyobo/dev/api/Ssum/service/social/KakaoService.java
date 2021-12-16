@@ -2,8 +2,8 @@ package com.kyobo.dev.api.Ssum.service.social;
 
 import com.google.gson.Gson;
 import com.kyobo.dev.api.Ssum.advice.exception.CCommunicationException;
-import com.kyobo.dev.api.Ssum.model.social.KakaoProfile;
-import com.kyobo.dev.api.Ssum.model.social.RetKakaoAuth;
+import com.kyobo.dev.api.Ssum.dto.social.KakaoProfile;
+import com.kyobo.dev.api.Ssum.dto.social.RetKakaoAuth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;

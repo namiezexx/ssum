@@ -1,11 +1,7 @@
 package com.kyobo.dev.api.Ssum.service.user;
 
-import com.kyobo.dev.api.Ssum.advice.exception.CResourceNotExistException;
 import com.kyobo.dev.api.Ssum.advice.exception.CUserExistException;
 import com.kyobo.dev.api.Ssum.advice.exception.CUserNotFoundException;
-import com.kyobo.dev.api.Ssum.entity.Board;
-import com.kyobo.dev.api.Ssum.entity.Comment;
-import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.User;
 import com.kyobo.dev.api.Ssum.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,26 +25,34 @@ public class UserService {
 
     public void checkUserPresentByEmail(String email) {
 
-        Optional<User> user = Optional.ofNullable(userJpaRepo.findByEmail(email));
-        user.ifPresent(u -> {
-            throw new CUserExistException();
-        });
+        // 회원가입 시 입력한 email 로 기등록된 사용자가 있다면 예외처리
+        userJpaRepo.findByEmail(email)
+                .ifPresent(user -> {
+                    throw new CUserExistException();
+                });
     }
 
     public void checkSocialUserPresentBySocialId(String socialId, String provider) {
 
-        Optional<User> user = Optional.ofNullable(userJpaRepo.findByEmailAndProvider(socialId, provider));
-        user.ifPresent(u -> {
+        userJpaRepo.findByEmailAndProvider(socialId, provider)
+                .ifPresent(user -> {
             throw new CUserExistException();
         });
     }
 
     public User findUserByEmail(String email) {
-        return Optional.ofNullable(userJpaRepo.findByEmail(email)).orElseThrow(CUserNotFoundException::new);
+        return userJpaRepo.findByEmail(email)
+                .orElseThrow(CUserNotFoundException::new);
+    }
+
+    public User findByEmailAndProvider(String id, String provider) {
+        return userJpaRepo.findByEmailAndProvider(id, provider)
+                .orElseThrow(CUserNotFoundException::new);
     }
 
     public Page<User> findUsers(Pageable pageable) {
-        return Optional.ofNullable(userJpaRepo.findAll(pageable)).orElseThrow(CUserNotFoundException::new);
+        return Optional.of(userJpaRepo.findAll(pageable))
+                .orElseThrow(CUserNotFoundException::new);
     }
 
     public User updateUser(User user) {

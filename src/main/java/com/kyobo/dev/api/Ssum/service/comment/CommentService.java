@@ -5,7 +5,7 @@ import com.kyobo.dev.api.Ssum.advice.exception.CResourceNotExistException;
 import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.Comment;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.request.comment.CommentRequestDto;
+import com.kyobo.dev.api.Ssum.dto.request.comment.CommentRequestDto;
 import com.kyobo.dev.api.Ssum.repository.CommentJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.NestedCommentJpaRepo;
 import com.kyobo.dev.api.Ssum.service.board.BoardService;
@@ -39,7 +39,8 @@ public class CommentService {
     public Page<Comment> findComments(long postId, Pageable pageable) {
 
         Post post = boardService.findPost(postId);
-        return Optional.ofNullable(commentJpaRepo.findByPost(post, pageable)).orElseThrow(CResourceNotExistException::new);
+        return commentJpaRepo.findByPost(post, pageable)
+                .orElseThrow(CResourceNotExistException::new);
     }
 
     public Comment updateComment(User user, long commentId, CommentRequestDto commentRequestDto) {

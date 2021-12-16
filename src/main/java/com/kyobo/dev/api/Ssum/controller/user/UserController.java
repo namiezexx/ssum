@@ -1,25 +1,19 @@
 package com.kyobo.dev.api.Ssum.controller.user;
 
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.request.user.UpdateDto;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
-import com.kyobo.dev.api.Ssum.model.response.ListResult;
-import com.kyobo.dev.api.Ssum.model.response.SingleResult;
-import com.kyobo.dev.api.Ssum.model.response.user.UserDto;
+import com.kyobo.dev.api.Ssum.dto.request.user.UpdateDto;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.ListResult;
+import com.kyobo.dev.api.Ssum.dto.response.SingleResult;
+import com.kyobo.dev.api.Ssum.dto.response.user.UserDto;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
 import com.kyobo.dev.api.Ssum.service.user.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 

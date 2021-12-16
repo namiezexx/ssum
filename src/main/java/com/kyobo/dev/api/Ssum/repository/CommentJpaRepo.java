@@ -10,9 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public interface CommentJpaRepo extends JpaRepository<Comment, Long> {
 
-    Page<Comment> findByPost(Post post, Pageable pageable);
+    Optional<Page<Comment>> findByPost(Post post, Pageable pageable);
 
     @Transactional
     @Modifying

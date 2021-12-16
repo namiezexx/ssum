@@ -1,33 +1,27 @@
 package com.kyobo.dev.api.Ssum.controller.user;
 
 import com.kyobo.dev.api.Ssum.advice.exception.CEmailSigninFailedException;
-import com.kyobo.dev.api.Ssum.advice.exception.CUserExistException;
 import com.kyobo.dev.api.Ssum.advice.exception.CUserNotFoundException;
 import com.kyobo.dev.api.Ssum.config.security.JwtTokenProvider;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.request.user.LoginDto;
-import com.kyobo.dev.api.Ssum.model.request.user.JoinDto;
-import com.kyobo.dev.api.Ssum.model.request.user.RefreshTokenDto;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
-import com.kyobo.dev.api.Ssum.model.response.SingleResult;
-import com.kyobo.dev.api.Ssum.model.response.user.TokenDto;
-import com.kyobo.dev.api.Ssum.model.social.KakaoProfile;
-import com.kyobo.dev.api.Ssum.model.social.SocialJoinDto;
-import com.kyobo.dev.api.Ssum.model.social.SocialLoginDto;
+import com.kyobo.dev.api.Ssum.dto.request.user.LoginDto;
+import com.kyobo.dev.api.Ssum.dto.request.user.JoinDto;
+import com.kyobo.dev.api.Ssum.dto.request.user.RefreshTokenDto;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.SingleResult;
+import com.kyobo.dev.api.Ssum.dto.response.user.TokenDto;
+import com.kyobo.dev.api.Ssum.dto.social.KakaoProfile;
+import com.kyobo.dev.api.Ssum.dto.social.SocialJoinDto;
+import com.kyobo.dev.api.Ssum.dto.social.SocialLoginDto;
 import com.kyobo.dev.api.Ssum.repository.UserJpaRepo;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
 import com.kyobo.dev.api.Ssum.service.user.UserService;
 import com.kyobo.dev.api.Ssum.service.social.KakaoService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -38,8 +32,6 @@ import java.util.Optional;
 @RequestMapping(value = "/v1")
 @CrossOrigin(origins = "http://localhost:8080")
 public class SignController {
-
-    private final UserJpaRepo userJpaRepo;
 
     private final UserService userService;
     private final KakaoService kakaoService;
@@ -72,7 +64,7 @@ public class SignController {
             @ApiParam(value = "소셜 access_token", required = true) @RequestBody SocialLoginDto socialLoginDto) {
 
         KakaoProfile profile = kakaoService.getKakaoProfile(socialLoginDto.getAccessToken());
-        User user = Optional.ofNullable(userJpaRepo.findByEmailAndProvider(String.valueOf(profile.getId()), provider)).orElseThrow(CUserNotFoundException::new);
+        User user = userService.findByEmailAndProvider(String.valueOf(profile.getId()), provider);
 
         TokenDto tokenDto = jwtTokenProvider.createToken(String.valueOf(user.getUserId()), user.getRoles());
 

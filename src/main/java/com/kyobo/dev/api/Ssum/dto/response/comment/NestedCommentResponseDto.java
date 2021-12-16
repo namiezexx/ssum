@@ -1,4 +1,4 @@
-package com.kyobo.dev.api.Ssum.model.response.comment;
+package com.kyobo.dev.api.Ssum.dto.response.comment;
 
 import lombok.Getter;
 import lombok.Setter;

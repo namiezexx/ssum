@@ -1,7 +1,7 @@
 package com.kyobo.dev.api.Ssum.advice;
 
 import com.kyobo.dev.api.Ssum.advice.exception.*;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;

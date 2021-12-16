@@ -1,4 +1,4 @@
-package com.kyobo.dev.api.Ssum.model.social;
+package com.kyobo.dev.api.Ssum.dto.social;
 
 import lombok.Getter;
 import lombok.Setter;

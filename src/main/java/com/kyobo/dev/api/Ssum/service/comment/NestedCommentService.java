@@ -4,13 +4,10 @@ import com.kyobo.dev.api.Ssum.advice.exception.CNotOwnerException;
 import com.kyobo.dev.api.Ssum.advice.exception.CResourceNotExistException;
 import com.kyobo.dev.api.Ssum.entity.Comment;
 import com.kyobo.dev.api.Ssum.entity.NestedComment;
-import com.kyobo.dev.api.Ssum.entity.Post;
 import com.kyobo.dev.api.Ssum.entity.User;
-import com.kyobo.dev.api.Ssum.model.request.comment.CommentRequestDto;
-import com.kyobo.dev.api.Ssum.model.request.comment.NestedCommentRequestDto;
+import com.kyobo.dev.api.Ssum.dto.request.comment.NestedCommentRequestDto;
 import com.kyobo.dev.api.Ssum.repository.CommentJpaRepo;
 import com.kyobo.dev.api.Ssum.repository.NestedCommentJpaRepo;
-import com.kyobo.dev.api.Ssum.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +39,8 @@ public class NestedCommentService {
 
         Comment comment = commentJpaRepo.findById(commentId).orElseThrow(CResourceNotExistException::new);
 
-        return Optional.ofNullable(nestedCommentJpaRepo.findByComment(comment, pageable)).orElseThrow(CResourceNotExistException::new);
+        return nestedCommentJpaRepo.findByComment(comment, pageable)
+                .orElseThrow(CResourceNotExistException::new);
     }
 
     public NestedComment updateNestedComment(User user, Long nestedCommentId, NestedCommentRequestDto commentRequestDto) {

@@ -1,7 +1,7 @@
 package com.kyobo.dev.api.Ssum.controller.exception;
 
 import com.kyobo.dev.api.Ssum.advice.exception.CAuthenticationEntryPointException;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.GetMapping;

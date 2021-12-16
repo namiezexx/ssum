@@ -1,11 +1,8 @@
-package com.kyobo.dev.api.Ssum.model.response.board;
+package com.kyobo.dev.api.Ssum.dto.response.board;
 
-import com.kyobo.dev.api.Ssum.entity.Board;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.Column;
 
 @Getter
 @Setter

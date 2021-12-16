@@ -2,7 +2,7 @@ package com.kyobo.dev.api.Ssum.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kyobo.dev.api.Ssum.advice.exception.CExpiredAccessTokenException;
-import com.kyobo.dev.api.Ssum.model.response.CommonResult;
+import com.kyobo.dev.api.Ssum.dto.response.CommonResult;
 import com.kyobo.dev.api.Ssum.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,21 +32,21 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try{
             filterChain.doFilter(request,response);
         } catch (CExpiredAccessTokenException ex){
-            setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, response, ex);
+            setErrorResponse(HttpStatus.UNAUTHORIZED, response, ex);
         }catch (RuntimeException ex){
-            log.error("runtime exception handler filter");
             setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, response, ex);
         }
     }
 
     public void setErrorResponse(HttpStatus status, HttpServletResponse response, Throwable ex){
-        response.setStatus(status.value());
-        response.setContentType("application/json");
+
         CommonResult commonResult = responseService.getFailResult(Integer.valueOf(getMessage("expiredAccessTokenException.code")), getMessage("expiredAccessTokenException.msg"));
+
         try{
 
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(commonResult);
+            response.setStatus(status.value());
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(json);
 

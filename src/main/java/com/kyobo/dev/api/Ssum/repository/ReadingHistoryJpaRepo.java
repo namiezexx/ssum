@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface ReadingHistoryJpaRepo extends JpaRepository<ReadingHistory, Long> {
+
     Page<ReadingHistory> findAll(Pageable pageable);
 
     @Query("select r from ReadingHistory r where r.user = :user and r.post = :post")

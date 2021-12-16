@@ -11,15 +11,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface PostJpaRepo extends JpaRepository<Post, Long> {
-    Page<Post> findByBoard(Board board, Pageable pageable);
+
+    Optional<Page<Post>> findByBoard(Board board, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
 
     @Query("select distinct p from Post p join fetch p.board b join fetch p.postOwner where p.postId = :postId")
-    Post findPostByQuery(@Param("postId") Long postId);
+    Optional<Post> findPostByQuery(@Param("postId") Long postId);
 
     @Transactional
     @Modifying
