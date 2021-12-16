@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,54 +54,54 @@ public class PostSearchController {
     }
     
     @ApiOperation(value = "특정 게시판 조회", notes = "특정 게시판의 글을 페이지 단위로 10개 조회한다.")
-    @GetMapping(value = "/{boardName}/posts")
-    public ListResult<PostResponseDto> posts(@PathVariable String boardName) {
+    @GetMapping(value = "/{boardName}/posts/{page}")
+    public ListResult<PostResponseDto> posts(@PathVariable("boardName") String boardName, @PathVariable("page") @Min(0) Integer page) {
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<Post> page = boardService.findPosts(boardName, pageRequest);
-        List<PostResponseDto> postDtoList = page.stream()
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<Post> pages = boardService.findPosts(boardName, pageRequest);
+        List<PostResponseDto> postDtoList = pages.stream()
                 .map(p -> modelMapper.map(p, PostResponseDto.class))
                 .collect(Collectors.toList());
 
-        return responseService.getListResult(postDtoList, page);
+        return responseService.getListResult(postDtoList, pages);
     }
 
     @ApiOperation(value = "인기순 글 리스트", notes = "전체 게시판 게시글 중 조회수가 가장 높은 10개 항목을 조회한다.")
-    @GetMapping(value = "/post/views")
-    public ListResult<PostResponseDto> postsByViews() {
+    @GetMapping(value = "/post/views/{page}")
+    public ListResult<PostResponseDto> postsByViews(@PathVariable("page") @Min(0) Integer page) {
 
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("views").descending());
-        Page<Post> page = boardService.findPosts(pageRequest);
-        List<PostResponseDto> postDtoList = page.stream()
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by("views").descending());
+        Page<Post> pages = boardService.findPosts(pageRequest);
+        List<PostResponseDto> postDtoList = pages.stream()
                 .map(p -> modelMapper.map(p, PostResponseDto.class))
                 .collect(Collectors.toList());
 
-        return responseService.getListResult(postDtoList, page);
+        return responseService.getListResult(postDtoList, pages);
     }
 
     @ApiOperation(value = "최신 글 리스트", notes = "전체 게시판 게시글 중 최신순으로 10개 항목을 조회한다.")
-    @GetMapping(value = "/post/new")
-    public ListResult<PostResponseDto> postsByNew() {
+    @GetMapping(value = "/post/new/{page}")
+    public ListResult<PostResponseDto> postsByNew(@PathVariable("page") @Min(0) Integer page) {
 
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("modifiedAt").descending());
-        Page<Post> page = boardService.findPosts(pageRequest);
-        List<PostResponseDto> postDtoList = page.stream()
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by("modifiedAt").descending());
+        Page<Post> pages = boardService.findPosts(pageRequest);
+        List<PostResponseDto> postDtoList = pages.stream()
                 .map(p -> modelMapper.map(p, PostResponseDto.class))
                 .collect(Collectors.toList());
 
-        return responseService.getListResult(postDtoList, page);
+        return responseService.getListResult(postDtoList, pages);
     }
 
     @ApiOperation(value = "추천 글 리스트", notes = "전체 게시판 게시글 중 좋아요 순으로 10개 항목을 조회한다.")
-    @GetMapping(value = "/post/likes")
-    public ListResult<PostResponseDto> postsByLikes() {
+    @GetMapping(value = "/post/likes/{page}")
+    public ListResult<PostResponseDto> postsByLikes(@PathVariable("page") @Min(0) Integer page) {
 
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("likes").descending());
-        Page<Post> page = boardService.findPosts(pageRequest);
-        List<PostResponseDto> postDtoList = page.stream()
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by("likes").descending());
+        Page<Post> pages = boardService.findPosts(pageRequest);
+        List<PostResponseDto> postDtoList = pages.stream()
                 .map(p -> modelMapper.map(p, PostResponseDto.class))
                 .collect(Collectors.toList());
 
-        return responseService.getListResult(postDtoList, page);
+        return responseService.getListResult(postDtoList, pages);
     }
 }

@@ -76,10 +76,10 @@ public class SignNUserControllerTest {
     public void joinTest() throws Exception {
 
         JoinDto joinDto = new JoinDto();
-        joinDto.setEmail("test@naver.com");
+        joinDto.setEmail("dev12345@naver.com");
         joinDto.setPassword("12345");
-        joinDto.setName("이재석");
-        joinDto.setPhone("01035221767");
+        joinDto.setName("홍길동");
+        joinDto.setPhone("01012349876");
         joinDto.setProfileImageUrl("");
 
         String content = objectMapper.writeValueAsString(joinDto);
@@ -149,8 +149,7 @@ public class SignNUserControllerTest {
                         .header("X-AUTH-TOKEN", accessToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId").value(1L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value("홍길동1"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId").value(1L));
     }
 
     @DisplayName("5.회원 수정 테스트")
@@ -185,8 +184,7 @@ public class SignNUserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.first").value(true))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.last").value(false))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.list[0].userId").value(1L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.list[0].name").value("홍길동1"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.list[0].userId").value(1L));
     }
 
     @DisplayName("7.회원삭제 테스트")

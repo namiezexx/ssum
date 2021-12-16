@@ -51,7 +51,7 @@ public class UserService {
     }
 
     public Page<User> findUsers(Pageable pageable) {
-        return Optional.of(userJpaRepo.findAll(pageable))
+        return userJpaRepo.findUsers(pageable)
                 .orElseThrow(CUserNotFoundException::new);
     }
 
