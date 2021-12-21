@@ -113,7 +113,7 @@ public class BoardControllerTest {
         postDto.setAuthor("김영한");
         postDto.setTitle("Spring Data JPA");
         postDto.setContent("JPA 영속성 컨텍스트에 대한 이해");
-        postDto.setThumbnailUrl("http://localhost:8080/image.jpg");
+        //postDto.setThumbnailUrl("http://localhost:8080/image.jpg");
 
         String content = objectMapper.writeValueAsString(postDto);
 
@@ -123,7 +123,6 @@ public class BoardControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.author").value("김영한"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.likes").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.views").value(0));
     }
@@ -147,8 +146,7 @@ public class BoardControllerTest {
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.author").value("김철수"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0));
     }
 
     @DisplayName("5.게시판 글 삭제 테스트")

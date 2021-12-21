@@ -32,11 +32,15 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try{
             filterChain.doFilter(request,response);
         } catch (CExpiredAccessTokenException ex){
+            ex.printStackTrace();
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, ex);
         }catch (RuntimeException ex){
+            ex.printStackTrace();
             setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, response, ex);
         }
     }
+
+
 
     public void setErrorResponse(HttpStatus status, HttpServletResponse response, Throwable ex){
 

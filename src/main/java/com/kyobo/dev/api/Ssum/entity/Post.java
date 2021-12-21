@@ -1,5 +1,6 @@
 package com.kyobo.dev.api.Ssum.entity;
 
+import com.kyobo.dev.api.Ssum.dto.request.board.PostDto;
 import com.kyobo.dev.api.Ssum.entity.common.CommonDateEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,11 +63,30 @@ public class Post extends CommonDateEntity {
         this.likes = 0;
     }
 
+    public Post(User postOwner, Board board, PostDto postDto) {
+        this.postOwner = postOwner;
+        this.board = board;
+        //this.author = postDto.getAuthor();
+        this.author = postOwner.getName();  // 글 작성자는 로그인한 유저로 저장
+        this.title = postDto.getTitle();
+        this.content = postDto.getContent();
+        this.thumbnailUrl = postDto.getThumbnailUrl();
+        this.views = 0;
+        this.likes = 0;
+    }
+
     // 수정시 데이터 처리
     public Post setUpdate(String author, String title, String content) {
         this.author = author;
         this.title = title;
         this.content = content;
+        return this;
+    }
+
+    public Post setUpdate(PostDto postDto) {
+        //this.author = postDto.getAuthor(); // 글 작성자는 최초 작성한 유저로 저장. 수정 불가.
+        this.title = postDto.getTitle();
+        this.content = postDto.getContent();
         return this;
     }
 

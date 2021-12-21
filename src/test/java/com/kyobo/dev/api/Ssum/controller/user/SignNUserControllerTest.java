@@ -178,7 +178,7 @@ public class SignNUserControllerTest {
     @Test
     public void findUsersTest() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users")
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/0")
                         .header("X-AUTH-TOKEN", accessToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))

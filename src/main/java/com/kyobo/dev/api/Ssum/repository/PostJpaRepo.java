@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface PostJpaRepo extends JpaRepository<Post, Long> {
 
-    Optional<Page<Post>> findByBoard(Board board, Pageable pageable);
+    Page<Post> findByBoard(Board board, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
 
     @Query("select distinct p from Post p join fetch p.board b join fetch p.postOwner where p.postId = :postId")

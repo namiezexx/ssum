@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @ToString
 public class PostDto {
 
-    @NotEmpty
+    //@NotEmpty
     @Size(min=2, max=50)
     @ApiModelProperty(value = "작성자명", example = "김영한", required = true)
     private String author;

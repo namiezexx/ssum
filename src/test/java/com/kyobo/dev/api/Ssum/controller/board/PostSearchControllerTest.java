@@ -94,7 +94,7 @@ public class PostSearchControllerTest {
     @Test
     public void getPostsByLikesTest() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/post/likes"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/post/likes/0"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.first").value(true));
@@ -104,7 +104,7 @@ public class PostSearchControllerTest {
     @Test
     public void getPostsByNewTest() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/post/new"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/post/new/0"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.first").value(true));
@@ -114,7 +114,7 @@ public class PostSearchControllerTest {
     @Test
     public void getPostsByViewsTest() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/post/views"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/post/views/0"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.first").value(true));
@@ -140,7 +140,7 @@ public class PostSearchControllerTest {
 
         String pathVariable = "free";
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/" + pathVariable + "/posts"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/board/" + pathVariable + "/posts/0"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.first").value(true));

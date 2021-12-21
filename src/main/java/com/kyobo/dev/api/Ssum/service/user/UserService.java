@@ -51,8 +51,12 @@ public class UserService {
     }
 
     public Page<User> findUsers(Pageable pageable) {
-        return userJpaRepo.findUsers(pageable)
-                .orElseThrow(CUserNotFoundException::new);
+
+        Page<User> users = userJpaRepo.findUsers(pageable);
+
+        if(users.isEmpty()) throw new CUserNotFoundException();
+
+        return users;
     }
 
     public User updateUser(User user) {

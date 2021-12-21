@@ -35,16 +35,16 @@ public class UserController {
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "회원 리스트 조회", notes = "모든 회원을 조회한다")
-    @GetMapping(value = "/users")
-    public ListResult<UserDto> findAllUser() {
+    @GetMapping(value = "/users/{page}")
+    public ListResult<UserDto> findAllUser(@PathVariable("page") Integer page) {
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<User> page = userService.findUsers(pageRequest);
-        List<UserDto> userDtoList = page.stream()
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<User> pages = userService.findUsers(pageRequest);
+        List<UserDto> userDtoList = pages.stream()
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
 
-        return responseService.getListResult(userDtoList, page);
+        return responseService.getListResult(userDtoList, pages);
     }
 
     @ApiImplicitParams({

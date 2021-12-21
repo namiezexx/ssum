@@ -38,20 +38,26 @@ public class BoardService {
     // 게시판 이름으로 게시물 리스트 조회.
     public Page<Post> findPosts(String boardName, Pageable pageable) {
         Board board = findBoard(boardName);
-        return postJpaRepo.findByBoard(board, pageable)
-                .orElseThrow(CResourceNotExistException::new);
+        Page<Post> posts = postJpaRepo.findByBoard(board, pageable);
+
+        if(posts.isEmpty()) throw new CResourceNotExistException();
+
+        return posts;
     }
 
     public Page<Post> findPosts(Pageable pageable) {
-        return Optional.of(postJpaRepo.findAll(pageable))
-                .orElseThrow(CResourceNotExistException::new);
+        Page<Post> posts = postJpaRepo.findAll(pageable);
+
+        if(posts.isEmpty()) throw new CResourceNotExistException();
+
+        return posts;
     }
 
     // 게시물을 등록합니다. 게시물의 회원UID가 조회되지 않으면 CUserNotFoundException 처리합니다.
     public Post writePost(User user, String boardName, PostDto postDto) {
 
         Board board = findBoard(boardName);
-        return postJpaRepo.save(new Post(user, board, postDto.getAuthor(), postDto.getTitle(), postDto.getContent(), postDto.getThumbnailUrl()));
+        return postJpaRepo.save(new Post(user, board, postDto));
     }
 
     // 게시물을 수정합니다. 게시물 등록자와 로그인 회원정보가 틀리면 CNotOwnerException 처리합니다.
@@ -63,7 +69,7 @@ public class BoardService {
             throw new CNotOwnerException();
 
         // 영속성 컨텍스트의 변경감지(dirty checking) 기능에 의해 조회한 Post내용을 변경만 해도 Update쿼리가 실행됩니다.
-        return post.setUpdate(postDto.getAuthor(), postDto.getTitle(), postDto.getContent());
+        return post.setUpdate(postDto);
     }
 
     // 게시물을 삭제합니다. 게시물 등록자와 로그인 회원정보가 틀리면 CNotOwnerException 처리합니다.
